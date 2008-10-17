@@ -4,7 +4,7 @@ from setuptools import setup, find_packages
 
 setup(
     name='manuel',
-    version='0',
+    version='1.0.0a2',
     packages=find_packages('src'),
     package_dir={'':'src'},
     zip_safe=False,
