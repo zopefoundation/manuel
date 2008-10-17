@@ -5,6 +5,7 @@ from setuptools import setup, find_packages
 setup(
     name='manuel',
     version='1.0.0a2',
+    url = 'http://pypi.python.org/pypi/manuel',
     packages=find_packages('src'),
     package_dir={'':'src'},
     zip_safe=False,
