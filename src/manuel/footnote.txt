@@ -1,0 +1,98 @@
+=========
+Footnotes
+=========
+
+The manuel.footnote module provides an implementation of reST footnote
+handling.
+
+    >>> import manuel.footnote
+    >>> m = manuel.footnote.Manuel()
+
+We'll try the footnotes out by combining them with doctests.
+
+    >>> import manuel.doctest
+    >>> m.extend(manuel.doctest.Manuel())
+    >>> import manuel
+    >>> document = manuel.Document("""\
+    ... Here we reference a footnote. [1]_
+    ...
+    ...     >>> x
+    ...     42
+    ...
+    ... Here we reference another. [2]_
+    ...
+    ...     >>> x
+    ...     100
+    ...
+    ... .. [1] This is a test footnote definition.
+    ...
+    ...     >>> x = 42
+    ...
+    ... .. [2] This is another test footnote definition.
+    ...
+    ...     >>> x = 100
+    ...
+    ... .. [3] This is a footnote that should never be executed.
+    ...
+    ...     >>> raise RuntimeError('nooooo!')
+    ... """)
+
+    >>> document.process_with(m)
+
+Since all the examples in the doctest above are correct, we expect no errors.
+
+    >>> for region in document:
+    ...     if region.formatted:
+    ...         print '-'*70
+    ...         print region.formatted,
+
+
+The order of examples in footnotes is preserved.  If not, the document below
+will generate an error because "a" won't be defined when "b = a + 1" is
+evaluated.
+
+    >>> document = manuel.Document("""
+    ... Here we want some imports to be done. [foo]_
+    ...
+    ...     >>> a + b
+    ...     3
+    ...
+    ... A little prose to separate the examples.
+    ...
+    ... .. [foo] Do something
+    ...
+    ...     >>> a = 1
+    ...
+    ...     >>> b = a + 1
+    ...     
+    ... """)
+    >>> document.process_with(m)
+    >>> print document.formatted()
+
+It is possible to reference more than one footnote on a single line.
+
+    >>> document = manuel.Document("""
+    ... Here we want some imports to be done. [1]_ [2]_ [3]_
+    ...
+    ...     >>> z
+    ...     105
+    ...
+    ... A little prose to separate the examples.
+    ...
+    ... .. [1] Do something
+    ...
+    ...     >>> w = 3
+    ...
+    ... .. [2] Do something
+    ...
+    ...     >>> x = 5
+    ...
+    ... .. [3] Do something
+    ...
+    ...     >>> y = 7
+    ...
+    ...     >>> z = w * x * y
+    ...     
+    ... """)
+    >>> document.process_with(m)
+    >>> print document.formatted()
