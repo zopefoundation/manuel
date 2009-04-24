@@ -1,9 +1,8 @@
-from zope.testing import doctest
 import StringIO
-#import UserDict
 import manuel
 import os.path
 
+doctest = manuel.absolute_import('doctest')
 
 class DocTestResult(StringIO.StringIO):
     pass

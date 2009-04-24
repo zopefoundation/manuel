@@ -1,0 +1,15 @@
+=======
+CHANGES
+=======
+
+
+Unreleased
+----------
+
+Nothing yet.
+
+
+1.0.0a2 (2008-10-17)
+--------------------
+
+- First public release.

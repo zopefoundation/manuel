@@ -6,6 +6,8 @@ Documentation and testing are important parts of software development.  Often
 they can be combined such that you get tests that are well documented or
 documentation that is well tested.  That's what Manuel is about.
 
+.. contents::
+
 
 Overview
 ========
@@ -90,8 +92,8 @@ the begining of a region and the second to identify the end.
     two: 4, 5, 7
     three: 3, 5, 1
 
-Also, instead of a single "match" attribute, the region will have start_match
-and end_match attributes.
+Also, instead of just a "start_match" attribute, the region will have
+start_match and end_match attributes.
 
     >>> region.start_match
     <_sre.SRE_Match object at 0x...>
