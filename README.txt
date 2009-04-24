@@ -1,1 +1,1 @@
-See src/menuel/README.txt
+See src/manuel/README.txt
