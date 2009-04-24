@@ -13,11 +13,10 @@ Overview
 ========
 
 Manuel parses documents, evaluates their contents, then formats the result of
-the evaluation.  All three phases are done in multiple passes.  The passes
-continue until the data structure remains unchanged by a pass.
+the evaluation.
 
 The core functionality is accessed through an instance of a Manuel object.  It
-is used to build up our handling of a document type.  Each phase has a
+is used to build up the handling of a document type.  Each phase has a
 corresponding slot to which various implementations are attached.
 
     >>> import manuel
@@ -29,7 +28,7 @@ corresponding slot to which various implementations are attached.
 Parsing
 -------
 
-Manuel operates on Documents.  Each Document is created from a a string
+Manuel operates on Documents.  Each Document is created from a string
 containing one or more lines.
 
     >>> source = """\
