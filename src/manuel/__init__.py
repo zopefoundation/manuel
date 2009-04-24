@@ -268,8 +268,7 @@ class Manuel(object):
         return self.thinger(self.formatters, func, timing)
 
     def thinger(self, things, func, timing):
-        """Private helper for adding functions to a phase.
-        """
+        """Private helper for adding functions to a phase."""
         if func is None:
             # the decorator is being called prior to being used as a decorator,
             # return a callable that can be called to provide the function
