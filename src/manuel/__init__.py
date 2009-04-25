@@ -217,11 +217,14 @@ class Document(object):
     def insert_region_after(self, marker_region, new_region):
         self.insert_region('after', marker_region, new_region)
 
-
     def do_with(self, things):
         """Private helper for other do_* functions.
         """
-        for timing, thing in sorted(things):
+        def key(f):
+            # "j" was chosen because it sorts between "early" and "late"
+            return getattr(f, 'manuel_timing', 'j')
+
+        for thing in sorted(things, key=key):
             thing(self)
 
     def parse_with(self, m):
@@ -253,34 +256,21 @@ class Document(object):
 
 class Manuel(object):
 
-    def __init__(self):
-        self.parsers = []
-        self.evaluaters = []
-        self.formatters = []
+    def __init__(self, parsers=None, evaluaters=None, formatters=None):
+        if parsers is not None:
+            self.parsers = parsers
+        else:
+            self.parsers = []
 
-    def parser(self, func=None, timing=None):
-        return self.thinger(self.parsers, func, timing)
+        if evaluaters is not None:
+            self.evaluaters = evaluaters
+        else:
+            self.evaluaters = []
 
-    def evaluater(self, func=None, timing=None):
-        return self.thinger(self.evaluaters, func, timing)
-
-    def formatter(self, func=None, timing=None):
-        return self.thinger(self.formatters, func, timing)
-
-    def thinger(self, things, func, timing):
-        """Private helper for adding functions to a phase."""
-        if func is None:
-            # the decorator is being called prior to being used as a decorator,
-            # return a callable that can be called to provide the function
-            # to be decorated
-            return lambda func: self.thinger(things, func, timing=timing)
-
-        assert timing in ('early', 'late', None)
-        if timing == None:
-            # arbitrarily chosen string that sorts between "early" and "late"
-            timing = 'k'
-
-        things.append((timing, func))
+        if formatters is not None:
+            self.formatters = formatters
+        else:
+            self.formatters = []
 
     def extend(self, other):
         self.parsers.extend(other.parsers)

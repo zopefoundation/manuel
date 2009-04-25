@@ -20,9 +20,6 @@ is used to build up the handling of a document type.  Each phase has a
 corresponding slot to which various implementations are attached.
 
     >>> import manuel
-    >>> m = manuel.Manuel()
-    >>> m
-    <manuel.Manuel object at 0x...>
 
 
 Parsing
@@ -131,8 +128,7 @@ Regions must always consist of whole lines.
 Now we can register a parser that will identify the regions we're interested in
 and create NumbersTest objects from the source text.
 
-    >>> @m.parser
-    ... def parse_numbers_test(document):
+    >>> def parse(document):
     ...     for region in document.find_regions(numbers_test_finder):
     ...         description = region.start_match.group('description')
     ...         numbers = map(
@@ -140,7 +136,7 @@ and create NumbersTest objects from the source text.
     ...         test = NumbersTest(description, numbers)
     ...         document.replace_region(region, test)
 
-    >>> document.parse_with(m)
+    >>> parse(document)
     >>> [region.source for region in document]
     ['This is our document, it has several lines.\n',
      'one: 1, 2, 3\n',
@@ -166,8 +162,7 @@ order and records the result along with the description of the list of numbers.
     ...         self.test = test
     ...         self.passed = passed
 
-    >>> @m.evaluater
-    ... def evaluate_numbers(document):
+    >>> def evaluate(document):
     ...     for region in document:
     ...         if not isinstance(region.parsed, NumbersTest):
     ...             continue
@@ -175,7 +170,7 @@ order and records the result along with the description of the list of numbers.
     ...         passed = sorted(test.numbers) == test.numbers
     ...         region.evaluated = NumbersResult(test, passed)
 
-    >>> document.evaluate_with(m)
+    >>> evaluate(document)
     >>> [region.evaluated for region in document]
     [None,
      <NumbersResult object at 0x...>,
@@ -191,8 +186,7 @@ it: manuel provides a method for formatting results.  We'll build one to format
 a message about whether or not our lists of numbers are sorted properly.  A
 formatting function returns None when it has no output, or a string otherwise.
 
-    >>> @m.formatter
-    ... def format(document):
+    >>> def format(document):
     ...     for region in document:
     ...         if not isinstance(region.evaluated, NumbersResult):
     ...             continue
@@ -204,20 +198,25 @@ formatting function returns None when it has no output, or a string otherwise.
 
 Since our test case passed we don't get anything out of the report function.
 
-    >>> document.format_with(m)
+    >>> format(document)
     >>> [region.formatted for region in document]
     [None, None, None, "the numbers aren't in sorted order: 3, 5, 1"]
 
 
-We'll want to use this Manuel object later, so lets stash it away
+Manuel Objects
+--------------
 
-    >>> sorted_numbers_manuel = m
+We'll want to use all these parse, evaluate, and format functions later, so we
+bundle them together into a Manuel object.
+
+    >>> sorted_numbers_manuel = manuel.Manuel(
+    ...     parsers=[parse], evaluaters=[evaluate], formatters=[format])
 
 
 Doctests
 ========
 
-We can use manuel to run doctests.  Let's create a simple doctest to
+We can use Manuel to run doctests.  Let's create a simple doctest to
 demonstrate with.
 
     >>> source = """This is my
@@ -374,15 +373,14 @@ Priorities
 ==========
 
 Some functionality requires that code be called early or late in a phase.  The
-"timing" keyword parameter allows either "early" or "late" to be specified.
+"manuel_timing" attribute allows either "early" or "late" to be specified.
 
 Early functions are run first (in arbitrary order), then functions with no
 specified timing, then the late functions are called (again in arbitrary
 order).  This function also demonstrates the "copy" method of Region objects
 and the "insert_region_before" and "insert_region_after" methods of Documents.
 
-    >>> @m.parser(timing='late')
-    ... def cloner(document):
+    >>> def cloner_parser(document):
     ...     to_be_cloned = None
     ...     # find the region to clone
     ...     document_iter = iter(document)
@@ -406,6 +404,10 @@ and the "insert_region_before" and "insert_region_after" methods of Documents.
     ...                 clone = to_be_cloned.copy()
     ...                 clone.provenance = 'cloned to go after'
     ...                 document.insert_region_after(region, clone)
+
+    >>> cloner_parser.manuel_timing = 'late'
+    >>> cloning_manuel = manuel.Manuel([cloner_parser])
+    >>> m.extend(cloning_manuel)
 
     >>> source = """\
     ... This is my clone:
