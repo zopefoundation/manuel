@@ -109,6 +109,14 @@ def break_up_region(original, new, parsed):
     return new_regions
 
 
+def sort_handlers(handlers):
+    def key(f):
+        # "j" was chosen because it sorts between "early" and "late"
+        return getattr(f, 'manuel_timing', 'j')
+
+    return sorted(handlers, key=key)
+
+
 class Document(object):
 
     def __init__(self, source, location='<memory>'):
@@ -230,24 +238,18 @@ class Document(object):
     def insert_region_after(self, marker_region, new_region):
         self.insert_region('after', marker_region, new_region)
 
-    def do_with(self, things):
-        """Private helper for other do_* functions.
-        """
-        def key(f):
-            # "j" was chosen because it sorts between "early" and "late"
-            return getattr(f, 'manuel_timing', 'j')
-
-        for thing in sorted(things, key=key):
-            thing(self)
-
     def parse_with(self, m):
-        self.do_with(m.parsers)
+        for parser in sort_handlers(m.parsers):
+            parser(self)
 
     def evaluate_with(self, m):
-        self.do_with(m.evaluaters)
+        for evaluater in sort_handlers(m.evaluaters):
+            for region in list(self):
+                evaluater(region, self)
 
     def format_with(self, m):
-        self.do_with(m.formatters)
+        for formatter in sort_handlers(m.formatters):
+            formatter(self)
 
     def process_with(self, m):
         """Run all phases of document processing using a Manuel instance.

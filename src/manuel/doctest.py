@@ -41,23 +41,22 @@ def parse(document):
             assert region in document
 
 
-def evaluate(m, document):
-    for region in document:
-        if not isinstance(region.parsed, doctest.Example):
-            continue
-        result = DocTestResult()
-        test_name = os.path.split(document.location)[1]
-        if m.debug:
-            runner = m.debug_runner
-        else:
-            runner = m.runner
+def evaluate(m, region, document):
+    if not isinstance(region.parsed, doctest.Example):
+        return
+    result = DocTestResult()
+    test_name = os.path.split(document.location)[1]
+    if m.debug:
+        runner = m.debug_runner
+    else:
+        runner = m.runner
 
-        runner.DIVIDER = '' # disable unwanted result formatting
-        runner.run(
-            doctest.DocTest([region.parsed], m.globs, test_name,
-                document.location, 0, None),
-            out=result.write, clear_globs=False)
-        region.evaluated = result
+    runner.DIVIDER = '' # disable unwanted result formatting
+    runner.run(
+        doctest.DocTest([region.parsed], m.globs, test_name,
+            document.location, 0, None),
+        out=result.write, clear_globs=False)
+    region.evaluated = result
 
 
 def format(document):
@@ -75,6 +74,7 @@ class Manuel(manuel.Manuel):
         self.debug_runner = doctest.DebugRunner(optionflags=optionflags)
         self.globs = SharedGlobs()
         self.debug = False
-        def evaluate_closure(document):
-            evaluate(self, document)
+        def evaluate_closure(region, document):
+            # capture "self"
+            evaluate(self, region, document)
         manuel.Manuel.__init__(self, [parse], [evaluate_closure], [format])

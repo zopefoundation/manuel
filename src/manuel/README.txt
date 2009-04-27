@@ -152,25 +152,27 @@ and create NumbersTest objects from the source text.
 Evaluation
 ----------
 
-After a document has been parsed the resulting tests are evaluated.  Manuel
-provides another method to evaluate tests.  Lets define a function to evaluate
-NumberTests.  The function determines whether or not the numbers are in sorted
-order and records the result along with the description of the list of numbers.
+After a document has been parsed the resulting tests are evaluated.  Unlike
+parsing and formatting, evaluation is done one region at a time, in the order
+that the regions appear in the document.  Manuel provides another method to
+evaluate tests.  Lets define a function to evaluate NumberTests.  The function
+determines whether or not the numbers are in sorted order and records the
+result along with the description of the list of numbers.
 
     >>> class NumbersResult(object):
     ...     def __init__(self, test, passed):
     ...         self.test = test
     ...         self.passed = passed
 
-    >>> def evaluate(document):
-    ...     for region in document:
-    ...         if not isinstance(region.parsed, NumbersTest):
-    ...             continue
-    ...         test = region.parsed
-    ...         passed = sorted(test.numbers) == test.numbers
-    ...         region.evaluated = NumbersResult(test, passed)
+    >>> def evaluate(region, document):
+    ...     if not isinstance(region.parsed, NumbersTest):
+    ...         return
+    ...     test = region.parsed
+    ...     passed = sorted(test.numbers) == test.numbers
+    ...     region.evaluated = NumbersResult(test, passed)
 
-    >>> evaluate(document)
+    >>> for region in document:
+    ...     evaluate(region, document)
     >>> [region.evaluated for region in document]
     [None,
      <NumbersResult object at 0x...>,
