@@ -373,14 +373,15 @@ Priorities
 ==========
 
 Some functionality requires that code be called early or late in a phase.  The
-"manuel_timing" attribute allows either "early" or "late" to be specified.
+"timing" decorator allows either EARLY or LATE to be specified.
 
 Early functions are run first (in arbitrary order), then functions with no
 specified timing, then the late functions are called (again in arbitrary
 order).  This function also demonstrates the "copy" method of Region objects
 and the "insert_region_before" and "insert_region_after" methods of Documents.
 
-    >>> def cloner_parser(document):
+    >>> @manuel.timing(manuel.LATE)
+    ... def cloning_parser(document):
     ...     to_be_cloned = None
     ...     # find the region to clone
     ...     document_iter = iter(document)
@@ -405,9 +406,7 @@ and the "insert_region_before" and "insert_region_after" methods of Documents.
     ...                 clone.provenance = 'cloned to go after'
     ...                 document.insert_region_after(region, clone)
 
-    >>> cloner_parser.manuel_timing = 'late'
-    >>> cloning_manuel = manuel.Manuel([cloner_parser])
-    >>> m.extend(cloning_manuel)
+    >>> m.add_parser(cloning_parser)
 
     >>> source = """\
     ... This is my clone:

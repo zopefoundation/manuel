@@ -18,6 +18,7 @@ class FootnoteDefinition(object):
         self.name = name
 
 
+@manuel.timing(manuel.EARLY)
 def find_footnote_references(document):
     # find the markers that show where footnotes have been defined.
     footnote_names = []
@@ -37,9 +38,8 @@ def find_footnote_references(document):
         assert names
         document.replace_region(region, FootnoteReference(names))
 
-find_footnote_references.manuel_timing = 'early'
 
-
+@manuel.timing(manuel.LATE)
 def do_footnotes(document):
     """Copy footnoted items into their appropriate position.
     """
@@ -69,8 +69,6 @@ def do_footnotes(document):
             for footnoted in footnotes[name]:
                 document.insert_region_before(region, footnoted.copy())
         document.remove_region(region)
-
-do_footnotes.manuel_timing = 'late'
 
 
 class Manuel(manuel.Manuel):

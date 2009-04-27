@@ -3,6 +3,7 @@ import manuel
 import os.path
 
 doctest = manuel.absolute_import('doctest')
+#from zope.testing import doctest
 
 class DocTestResult(StringIO.StringIO):
     pass

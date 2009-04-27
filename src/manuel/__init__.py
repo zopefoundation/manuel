@@ -1,6 +1,19 @@
 import imp
 import re
 
+# constants for use with "timing" decorator
+EARLY = 'early'
+LATE = 'late'
+
+
+def timing(timing):
+    assert timing in (EARLY, LATE)
+    def decorate(func):
+        func.manuel_timing = timing
+        return func
+
+    return decorate
+
 
 def absolute_import(name):
     return imp.load_module(name, *imp.find_module(name))
@@ -271,6 +284,15 @@ class Manuel(object):
             self.formatters = formatters
         else:
             self.formatters = []
+
+    def add_parser(self, parser):
+        self.parsers.append(parser)
+
+    def add_evaluater(self, evaluater):
+        self.evaluaters.append(evaluater)
+
+    def add_formatter(self, formatter):
+        self.formatters.append(formatter)
 
     def extend(self, other):
         self.parsers.extend(other.parsers)
