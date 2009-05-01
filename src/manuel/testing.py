@@ -33,7 +33,7 @@ class TestCase(unittest.TestCase):
         results = [r.formatted for r in self.document if r.formatted]
         if results:
             DIVIDER = '-'*70 + '\n'
-            raise self.failureException(
+            raise doctest.DocTestFailureException(
                 '\n' + DIVIDER + DIVIDER.join(results))
 
     def debug(self):
