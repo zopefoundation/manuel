@@ -5,6 +5,13 @@ import re
 EARLY = 'early'
 LATE = 'late'
 
+class GlobWrapper(dict):
+
+    def copy(self):
+        # XXX hack to trick doctest into making changes to the shared state
+        # instead of keeping a private copy
+        return self
+
 
 def timing(timing):
     assert timing in (EARLY, LATE)
@@ -242,20 +249,21 @@ class Document(object):
         for parser in sort_handlers(m.parsers):
             parser(self)
 
-    def evaluate_with(self, m):
+    def evaluate_with(self, m, globs):
+        globs = GlobWrapper(globs)
         for evaluater in sort_handlers(m.evaluaters):
             for region in list(self):
-                evaluater(region, self)
+                evaluater(region, self, globs)
 
     def format_with(self, m):
         for formatter in sort_handlers(m.formatters):
             formatter(self)
 
-    def process_with(self, m):
+    def process_with(self, m, globs):
         """Run all phases of document processing using a Manuel instance.
         """
         self.parse_with(m)
-        self.evaluate_with(m)
+        self.evaluate_with(m, globs)
         self.format_with(m)
 
     def formatted(self):

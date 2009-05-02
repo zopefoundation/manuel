@@ -164,7 +164,7 @@ result along with the description of the list of numbers.
     ...         self.test = test
     ...         self.passed = passed
 
-    >>> def evaluate(region, document):
+    >>> def evaluate(region, document, globs):
     ...     if not isinstance(region.parsed, NumbersTest):
     ...         return
     ...     test = region.parsed
@@ -172,7 +172,7 @@ result along with the description of the list of numbers.
     ...     region.evaluated = NumbersResult(test, passed)
 
     >>> for region in document:
-    ...     evaluate(region, document)
+    ...     evaluate(region, document, {})
     >>> [region.evaluated for region in document]
     [None,
      <NumbersResult object at 0x...>,
@@ -243,7 +243,7 @@ look at parsing.
 
 Now we can evaluate the examples.
 
-    >>> document.evaluate_with(m)
+    >>> document.evaluate_with(m, globs={})
     >>> for region in document:
     ...     print (region.lineno, region.evaluated or region.source)
     (1, 'This is my\ndoctest.\n\n')
@@ -267,7 +267,7 @@ things.
     ...     42
     ... """)
 
-    >>> document.process_with(m)
+    >>> document.process_with(m, globs={})
     >>> print document.formatted()
     File "<memory>", line 4, in <memory>
     Failed example:
@@ -281,8 +281,10 @@ things.
 Globals
 -------
 
-Even though each example is parsed into its own object, state is still shared
-between them.
+Even though each region is parsed into its own object, state is still shared
+between them.  Each region of the document is executed in order so state
+changes made by earlier evaluaters are available to the current evaluator.
+
 
     >>> document = manuel.Document("""
     ...     >>> x = 1
@@ -292,7 +294,7 @@ between them.
     ...     >>> x
     ...     1
     ... """)
-    >>> document.process_with(m)
+    >>> document.process_with(m, globs={})
     >>> print document.formatted()
 
 Imported modules are added to the global namespace as well.
@@ -306,7 +308,7 @@ Imported modules are added to the global namespace as well.
     ...     '0123456789'
     ...     
     ... """)
-    >>> document.process_with(m)
+    >>> document.process_with(m, globs={})
     >>> print document.formatted()
 
 
@@ -341,7 +343,7 @@ tests, we can extend the built-in doctest configuration with it.
 Now we can process our source that combines both types of tests and see what
 we get.
 
-    >>> document.process_with(m)
+    >>> document.process_with(m, globs={})
 
 The document was parsed and has a mixture of prose and parsed doctests and
 number tests.
@@ -422,7 +424,7 @@ and the "insert_region_before" and "insert_region_after" methods of Documents.
     ... I'd also like a clone after *here*.
     ... """
     >>> document = manuel.Document(source)
-    >>> document.process_with(m)
+    >>> document.process_with(m, globs={})
     >>> [(r.source, r.provenance) for r in document]
     [('This is my clone:\n\n', None),
      ('clone: 1, 2, 3\n', None),

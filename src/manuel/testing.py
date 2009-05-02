@@ -6,14 +6,16 @@ import unittest
 __all__ = ['TestSuite']
 
 class TestCase(unittest.TestCase):
-    def __init__(self, m, document, setUp=None, tearDown=None,
-            globs=None):
+    def __init__(self, m, document, setUp=None, tearDown=None, globs=None):
         unittest.TestCase.__init__(self)
         self.manuel = m
         self.document = document
         self.setUp_func = setUp
         self.tearDown_func = tearDown
-        self.globs = globs
+        if globs is None:
+            self.globs = {}
+        else:
+            self.globs = globs
 
         # we want to go ahead and do the parse phase so the countTestCases
         # method can get a good idea of how many tests there are
@@ -21,14 +23,14 @@ class TestCase(unittest.TestCase):
 
     def setUp(self):
         if self.setUp_func is not None:
-            self.setUp_func(self.manuel)
+            self.setUp_func(self)
 
     def tearDown(self):
         if self.tearDown_func is not None:
-            self.tearDown_func(self.manuel)
+            self.tearDown_func(self)
 
     def runTest(self):
-        self.document.evaluate_with(self.manuel)
+        self.document.evaluate_with(self.manuel, self.globs)
         self.document.format_with(self.manuel)
         results = [r.formatted for r in self.document if r.formatted]
         if results:
@@ -39,7 +41,7 @@ class TestCase(unittest.TestCase):
     def debug(self):
         self.setUp()
         self.manuel.debug = True
-        self.document.evaluate_with(self.manuel)
+        self.document.evaluate_with(self.manuel, self.globs)
         self.tearDown()
 
     def countTestCases(self):
@@ -63,7 +65,7 @@ def TestSuite(m, *paths, **kws):
 
     `setUp`
       A set-up function.  This is called before running the tests in each file.
-      The setUp function will be passed a Manuel object.  The setUp function
+      The setUp function will be passed a TestCase object.  The setUp function
       can access the test globals as the `globs` attribute of the instance
       passed.
 

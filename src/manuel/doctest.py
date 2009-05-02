@@ -9,12 +9,6 @@ class DocTestResult(StringIO.StringIO):
     pass
 
 
-class SharedGlobs(dict):
-
-    def copy(self):
-        return self
-
-
 def parse(document):
     for region in list(document):
         if region.parsed:
@@ -41,7 +35,7 @@ def parse(document):
             assert region in document
 
 
-def evaluate(m, region, document):
+def evaluate(m, region, document, globs):
     if not isinstance(region.parsed, doctest.Example):
         return
     result = DocTestResult()
@@ -53,7 +47,7 @@ def evaluate(m, region, document):
 
     runner.DIVIDER = '' # disable unwanted result formatting
     runner.run(
-        doctest.DocTest([region.parsed], m.globs, test_name,
+        doctest.DocTest([region.parsed], globs, test_name,
             document.location, 0, None),
         out=result.write, clear_globs=False)
     region.evaluated = result
@@ -72,9 +66,8 @@ class Manuel(manuel.Manuel):
         self.runner = doctest.DocTestRunner(optionflags=optionflags,
             checker=checker)
         self.debug_runner = doctest.DebugRunner(optionflags=optionflags)
-        self.globs = SharedGlobs()
         self.debug = False
-        def evaluate_closure(region, document):
+        def evaluate_closure(region, document, globs):
             # capture "self"
-            evaluate(self, region, document)
+            evaluate(self, region, document, globs)
         manuel.Manuel.__init__(self, [parse], [evaluate_closure], [format])

@@ -37,7 +37,7 @@ We'll try the footnotes out by combining them with doctests.
     ...     >>> raise RuntimeError('nooooo!')
     ... """)
 
-    >>> document.process_with(m)
+    >>> document.process_with(m, globs={})
 
 Since all the examples in the doctest above are correct, we expect no errors.
 
@@ -66,7 +66,7 @@ evaluated.
     ...     >>> b = a + 1
     ...     
     ... """)
-    >>> document.process_with(m)
+    >>> document.process_with(m, globs={})
     >>> print document.formatted()
 
 It is possible to reference more than one footnote on a single line.
@@ -94,5 +94,5 @@ It is possible to reference more than one footnote on a single line.
     ...     >>> z = w * x * y
     ...     
     ... """)
-    >>> document.process_with(m)
+    >>> document.process_with(m, globs={})
     >>> print document.formatted()
