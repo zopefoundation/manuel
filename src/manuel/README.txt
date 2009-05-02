@@ -208,7 +208,7 @@ Since our test case passed we don't get anything out of the report function.
 Manuel Objects
 --------------
 
-We'll want to use all these parse, evaluate, and format functions later, so we
+We'll want to use these parse, evaluate, and format functions later, so we
 bundle them together into a Manuel object.
 
     >>> sorted_numbers_manuel = manuel.Manuel(
