@@ -1,6 +1,12 @@
 CHANGES
 =======
 
+1.0.0a4 (2009-05-01)
+--------------------
+
+- make the global state ("globs") shared between all evaluators, not just
+  doctest
+
 
 1.0.0a3 (2009-05-01)
 --------------------

@@ -2,10 +2,6 @@
 Manuel
 ======
 
-Documentation and testing are important parts of software development.  Often
-they can be combined such that you get tests that are well documented or
-documentation that is well tested.  That's what Manuel is about.
-
 .. contents::
 
 
