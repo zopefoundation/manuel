@@ -1,0 +1,23 @@
+Miscellaneous Tests
+===================
+
+Fixed Bugs
+----------
+
+If a line of text matches both a "start" and "end" regular expression, no
+exception should be raised.
+
+    >>> source = """\
+    ... Blah, blah.
+    ... 
+    ... xxx
+    ... some text
+    ... xxx
+    ...
+    ... """
+    >>> import manuel
+    >>> document = manuel.Document(source)
+    >>> import re
+    >>> start = end = re.compile(r'^xxx$', re.MULTILINE)
+    >>> document.find_regions(start, end)
+    [<manuel.Region object at ...]

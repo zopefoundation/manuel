@@ -15,13 +15,13 @@ def test_suite():
         ])
     suite = unittest.TestSuite()
 
-    tests = ['README.txt', 'footnote.txt']
+    tests = ['README.txt', 'footnote.txt', 'bugs.txt']
 
     # Run the tests once with doctest.
     suite.addTest(
         doctest.DocFileSuite(optionflags=optionflags, checker=checker, *tests))
 
-    # Run them again with manuel's doctest support.
+    # Run them again with Manuel's doctest support.
     m = manuel.doctest.Manuel(optionflags=optionflags, checker=checker)
     suite.addTest(manuel.testing.TestSuite(m, *tests))
 

@@ -159,6 +159,10 @@ class Document(object):
                     text = start_match.group()
                 else:
                     end_match = end.search(region.source, start_match.end())
+
+                    # couldn't find a match for the end re, try again
+                    if end_match is None:
+                        continue
                     check_region_end(region, end_match)
                     text = region.source[start_match.start():end_match.end()]
 
