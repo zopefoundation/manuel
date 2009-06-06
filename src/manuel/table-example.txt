@@ -1,0 +1,280 @@
+FIT Table Example
+=================
+
+Occasionally when structuring a doctest, you want to succinctly express several
+sets of inputs and outputs of a particular function.
+
+That's something `FIT <http://fit.c2.com/wiki.cgi?SimpleExample>`_ tables do a
+good job of.
+
+Lets write a simple table evaluator using Manuel.
+
+We'll use `reST <http://docutils.sourceforge.net/rst.html>' tables.  The table
+source will look like this:
+
+    =====  =====  ======
+    \      A or B
+    --------------------
+      A      B    Result
+    =====  =====  ======
+    False  False  False
+    True   False  True
+    False  True   True
+    True   True   True
+    =====  =====  ======
+
+When rendered, it will look like this:
+
+=====  =====  ======
+\      A or B
+--------------------
+  A      B    Result
+=====  =====  ======
+False  False  False
+True   False  True
+False  True   True
+True   True   True
+=====  =====  ======
+
+Lets imagine that the source of our test was stored in a string:
+
+    >>> source = """\
+    ... The "or" operator
+    ... =================
+    ...
+    ... Here is an example of the "or" operator in action:
+    ...
+    ... =====  =====  ======
+    ... \      A or B
+    ... --------------------
+    ...   A      B    Result
+    ... =====  =====  ======
+    ... False  False  False
+    ... True   False  True
+    ... False  True   True
+    ... True   True   True
+    ... =====  =====  ======
+    ... """
+
+
+Parsing
+-------
+
+First we need a function to find the tables::
+
+.. code-block:: python
+
+    import re
+
+    table_start = re.compile(r'(?<=\n\n)=[= ]+\n(?=[ \t]*?\S)', re.DOTALL)
+    table_end = re.compile(r'\n=[= ]+\n(?=\Z|\n)', re.DOTALL)
+
+    class Table(object):
+        def __init__(self, source):
+            self.source = source
+
+    def find_tables(document):
+        for region in document.find_regions(table_start, table_end):
+            table = Table(region.source)
+            document.replace_region(region, table)
+
+Instances of the class "Table" will represent the tables.
+
+Now we can create a Manuel Document from the source and use the "find_tables"
+function on it.
+
+    >>> import manuel
+    >>> document = manuel.Document(source, location='fake.txt')
+    >>> find_tables(document)
+
+If we examine the Docuement object we can see that the table was recognized.
+
+    >>> region = list(document)[1]
+    >>> print region.source,
+    =====  =====  ======
+    \      A or B
+    --------------------
+      A      B    Result
+    =====  =====  ======
+    False  False  False
+    True   False  True
+    False  True   True
+    True   True   True
+    =====  =====  ======
+
+    >>> region.parsed
+    <Table object at ...>
+
+
+Evaluating
+==========
+
+Now that we can find and extract the tables from the source, we need to be able
+to evaluate them.
+
+.. code-block:: python
+
+    class TableErrors(list):
+        pass
+
+
+    class TableError(object):
+        def __init__(self, location, lineno, expected, got):
+            self.location = location
+            self.lineno = lineno
+            self.expected = expected
+            self.got = got
+
+        def __str__(self):
+            return '<%s %s:%s>' % (
+                self.__class__.__name__, self.location, self.lineno)
+
+
+    def evaluate_table(region, document, globs):
+        if not isinstance(region.parsed, Table):
+            return
+
+        lines = enumerate(iter(region.source.splitlines()))
+        lines.next() # skip the first line
+        expression = lines.next()[1]
+        lines.next() # skip the divider line
+        variables = [v.strip() for v in lines.next()[1].split()][:-1]
+
+        errors = TableErrors()
+
+        lines.next() # skip the divider line
+        for lineno_offset, line in lines:
+            if line.startswith('='):
+                break # we ran into the final divider, so stop
+
+            values = [eval(v.strip(), {}) for v in line.split()]
+            inputs = values[:-1]
+            output = values[-1]
+
+            if expression.startswith('\\'):
+                expression = expression[1:]
+            result = eval(expression, dict(zip(variables, inputs)))
+            if result != output:
+                lineno = region.lineno + lineno_offset
+                errors.append(
+                    TableError(document.location, lineno, output, result))
+
+        region.evaluated = errors
+
+Now the table can be evaluated:
+
+    >>> evaluate_table(region, document, {})
+
+Yay!  There were no errors:
+
+    >>> region.evaluated
+    []
+
+What would happen if there were?
+
+    >>> source_with_errors = """\
+    ... The "or" operator
+    ... =================
+    ...
+    ... Here is an (erroneous) example of the "or" operator in action:
+    ...
+    ... =====  =====  ======
+    ... \      A or B
+    ... --------------------
+    ...   A      B    Result
+    ... =====  =====  ======
+    ... False  False  True
+    ... True   False  True
+    ... False  True   False
+    ... True   True   True
+    ... =====  =====  ======
+    ... """
+
+    >>> document = manuel.Document(source_with_errors, location='fake.txt')
+    >>> find_tables(document)
+    >>> region = list(document)[1]
+
+This time the evaluator records errors:
+
+    >>> evaluate_table(region, document, {})
+    >>> region.evaluated
+    [<TableError object at ...>]
+
+
+Formatting Errors
+=================
+
+Now that we can parse the tables and evaluate them, we need to be able to
+display the results in a readable fashion.
+
+.. code-block:: python
+
+    def format_table_errors(document):
+        for region in document:
+            if not isinstance(region.evaluated, TableErrors):
+                continue
+
+            # if there were no errors, skip this table
+            if not region.evaluated:
+                continue
+
+            messages = []
+            for error in region.evaluated:
+                messages.append('%s, line %d: expected %r, got %r instead.' % (
+                    error.location, error.lineno, error.expected, error.got))
+
+            sep = '\n    '
+            header = 'when evaluating table at %s, line %d' % (
+                document.location, region.lineno)
+            region.formatted = header + sep + sep.join(messages)
+
+
+Now we can see how the formatted results look.
+
+    >>> format_table_errors(document)
+    >>> print region.formatted,
+    when evaluating table at fake.txt, line 6
+        fake.txt, line 11: expected True, got False instead.
+        fake.txt, line 13: expected False, got True instead.
+
+
+All Together Now
+================
+
+All the pieces (parsing, evaluating, and formatting) are available now, so we
+just have to put them together into a single "Manuel" object.
+
+    >>> m = manuel.Manuel(parsers=[find_tables], evaluaters=[evaluate_table],
+    ...     formatters=[format_table_errors])
+
+Now we can create a fresh document and tell it to do all the above steps with
+our Manuel instance.
+
+    >>> document = manuel.Document(source_with_errors, location='fake.txt')
+    >>> document.process_with(m, globs={})
+    >>> print document.formatted(),
+    when evaluating table at fake.txt, line 6
+        fake.txt, line 11: expected True, got False instead.
+        fake.txt, line 13: expected False, got True instead.
+
+Of course, if there were no errors, nothing would be reported:
+
+    >>> document = manuel.Document(source, location='fake.txt')
+    >>> document.process_with(m, globs={})
+    >>> print document.formatted()
+
+If we wanted to use our new table tests in a file named "table-example.txt" and
+include them in a unittest TestSuite, it would look something like this:
+
+.. code-block:: python
+
+    import unittest
+    import manuel.testing
+
+    suite = unittest.TestSuite()
+    suite = manuel.testing.TestSuite(m, 'table-example.txt')
+
+If the tests are run (e.g., by a test runner), everything works.
+
+    >>> suite.run(unittest.TestResult())
+    <unittest.TestResult run=1 errors=0 failures=0>

@@ -255,8 +255,8 @@ class Document(object):
 
     def evaluate_with(self, m, globs):
         globs = GlobWrapper(globs)
-        for evaluater in sort_handlers(m.evaluaters):
-            for region in list(self):
+        for region in list(self):
+            for evaluater in sort_handlers(m.evaluaters):
                 evaluater(region, self, globs)
 
     def format_with(self, m):

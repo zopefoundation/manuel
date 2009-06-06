@@ -1,5 +1,6 @@
 from zope.testing import renormalizing
 import manuel
+import manuel.codeblock
 import manuel.doctest
 import manuel.testing
 import re
@@ -25,4 +26,8 @@ def test_suite():
     m = manuel.doctest.Manuel(optionflags=optionflags, checker=checker)
     suite.addTest(manuel.testing.TestSuite(m, *tests))
 
+    # Run the table example with doctest plus the codeblock extension.
+    m = manuel.doctest.Manuel(optionflags=optionflags, checker=checker)
+    m.extend(manuel.codeblock.Manuel())
+    suite.addTest(manuel.testing.TestSuite(m, 'table-example.txt'))
     return suite

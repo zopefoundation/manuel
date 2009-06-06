@@ -81,8 +81,15 @@ def TestSuite(m, *paths, **kws):
 
     suite = unittest.TestSuite()
 
-    # inspect the stack frame to find the module that called this function
-    calling_module = doctest._normalize_module(None, depth=2)
+    # walk up the stack frame to find the module that called this function
+    depth = 2
+    for depth in range(2, 5):
+        try:
+            calling_module = doctest._normalize_module(None, depth=depth)
+        except KeyError:
+            continue
+        else:
+            break
 
     for path in paths:
         abs_path = doctest._module_relative_path(calling_module, path)
