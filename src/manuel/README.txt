@@ -1,6 +1,5 @@
-======
-Manuel
-======
+Contents
+========
 
 .. contents::
 
