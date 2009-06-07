@@ -4,8 +4,8 @@ from setuptools import setup, find_packages
 
 long_description = (
     open(os.path.join('src', 'manuel', 'README.txt')).read()
-    + '\n\n'
-    + open(os.path.join('src', 'manuel', 'table-example.txt')).read()
+    #+ '\n\n'
+    #+ open(os.path.join('src', 'manuel', 'table-example.txt')).read()
     + '\n\n'
     + open('CHANGES.txt').read()
     )

@@ -10,8 +10,6 @@ Overview
 In short, Manuel parses documents (tests), evaluates their contents, then
 formats the result of the evaluation.
 
-For a quick introduction to Manuel, take a look at the `FIT Table Example`_.
-
 The core functionality is accessed through an instance of a Manuel object.  It
 is used to build up the handling of a document type.  Each phase has a
 corresponding slot to which various implementations are attached.
