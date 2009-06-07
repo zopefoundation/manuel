@@ -10,7 +10,7 @@ good job of.
 Lets write a simple table evaluator using Manuel.
 
 We'll use `reST <http://docutils.sourceforge.net/rst.html>`_ tables.  The table
-source will look like this:
+source will look like this::
 
     =====  =====  ======
     \      A or B
