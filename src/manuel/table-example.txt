@@ -9,7 +9,7 @@ good job of.
 
 Lets write a simple table evaluator using Manuel.
 
-We'll use `reST <http://docutils.sourceforge.net/rst.html>' tables.  The table
+We'll use `reST <http://docutils.sourceforge.net/rst.html>`_ tables.  The table
 source will look like this:
 
     =====  =====  ======
@@ -60,7 +60,7 @@ Lets imagine that the source of our test was stored in a string:
 Parsing
 -------
 
-First we need a function to find the tables::
+First we need a function to find the tables:
 
 .. code-block:: python
 
