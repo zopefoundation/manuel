@@ -16,7 +16,7 @@ def test_suite():
         ])
     suite = unittest.TestSuite()
 
-    tests = ['README.txt', 'footnote.txt', 'bugs.txt']
+    tests = ['README.txt', 'footnote.txt', 'bugs.txt', 'code-block.txt']
 
     # Run the tests once with doctest.
     suite.addTest(
@@ -29,5 +29,6 @@ def test_suite():
     # Run the table example with doctest plus the codeblock extension.
     m = manuel.doctest.Manuel(optionflags=optionflags, checker=checker)
     m.extend(manuel.codeblock.Manuel())
-    suite.addTest(manuel.testing.TestSuite(m, 'table-example.txt'))
+    suite.addTest(manuel.testing.TestSuite(
+        m, 'table-example.txt'))
     return suite
