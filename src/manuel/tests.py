@@ -16,7 +16,8 @@ def test_suite():
         ])
     suite = unittest.TestSuite()
 
-    tests = ['README.txt', 'footnote.txt', 'bugs.txt', 'code-block.txt']
+    tests = ['README.txt', 'footnote.txt', 'bugs.txt', 'code-block.txt',
+        'isolation.txt']
 
     # Run the tests once with doctest.
     suite.addTest(
