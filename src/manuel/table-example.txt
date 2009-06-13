@@ -1,16 +1,23 @@
 FIT Table Example
 =================
 
-Occasionally when structuring a doctest, you want to succinctly express several
-sets of inputs and outputs of a particular function.
+Occasionally when writing a doctest, you want a better way to express a test
+than doctest by itself provides.
+
+For example, you may want to succinctly express the result of an expression for
+several sets of inputs and outputs.
 
 That's something `FIT <http://fit.c2.com/wiki.cgi?SimpleExample>`_ tables do a
 good job of.
 
-Lets write a simple table evaluator using Manuel.
+We can use Manuel to write a parser that can read the tables, an evaluator that
+can check to see if the assertions made in the tables match reality, and a
+formatter to display the results if they don't.
 
-We'll use `reST <http://docutils.sourceforge.net/rst.html>`_ tables.  The table
-source will look like this::
+    >>> import manuel
+
+We'll use `reST <http://docutils.sourceforge.net/rst.html>`_ tables as the
+table format.  The table source will look like this::
 
     =====  =====  ======
     \      A or B
@@ -36,31 +43,51 @@ False  True   True
 True   True   True
 =====  =====  ======
 
-Lets imagine that the source of our test was stored in a string:
+The source for our test...
 
-    >>> source = """\
-    ... The "or" operator
-    ... =================
-    ...
-    ... Here is an example of the "or" operator in action:
-    ...
-    ... =====  =====  ======
-    ... \      A or B
-    ... --------------------
-    ...   A      B    Result
-    ... =====  =====  ======
-    ... False  False  False
-    ... True   False  True
-    ... False  True   True
-    ... True   True   True
-    ... =====  =====  ======
-    ... """
+.. code-block:: python
+
+    source = """\
+    The "or" operator
+    =================
+    
+    Here is an example of the "or" operator in action:
+    
+    =====  =====  ======
+    \      A or B
+    --------------------
+      A      B    Result
+    =====  =====  ======
+    False  False  False
+    True   False  True
+    False  True   True
+    True   True   True
+    =====  =====  ======
+    """
+
+...will be stored in a Manuel Document:
+
+.. code-block:: python
+
+    document = manuel.Document(source, location='fake.txt')
 
 
 Parsing
 -------
 
-First we need a function to find the tables:
+
+First we need an object to represent the tables.
+
+.. code-block:: python
+
+    class Table(object):
+        def __init__(self, expression, variables, examples):
+            self.expression = expression
+            self.variables = variables
+            self.examples = examples
+
+We'll also need a function to find the tables in the document, extract the
+pertinent details, and instantiate Table objects.
 
 .. code-block:: python
 
@@ -68,12 +95,6 @@ First we need a function to find the tables:
 
     table_start = re.compile(r'(?<=\n\n)=[= ]+\n(?=[ \t]*?\S)', re.DOTALL)
     table_end = re.compile(r'\n=[= ]+\n(?=\Z|\n)', re.DOTALL)
-
-    class Table(object):
-        def __init__(self, expression, variables, examples):
-            self.expression = expression
-            self.variables = variables
-            self.examples = examples
 
     def parse_tables(document):
         for region in document.find_regions(table_start, table_end):
@@ -104,17 +125,9 @@ First we need a function to find the tables:
             table = Table(expression, variables, examples)
             document.replace_region(region, table)
 
-Instances of the class "Table" will represent the tables.
+If we parse the Docuement we can see that the table was recognized.
 
-Now we can create a Manuel Document from the source and use the "parse_tables"
-function on it.
-
-    >>> import manuel
-    >>> document = manuel.Document(source, location='fake.txt')
     >>> parse_tables(document)
-
-If we examine the Docuement object we can see that the table was recognized.
-
     >>> region = list(document)[1]
     >>> print region.source,
     =====  =====  ======
@@ -136,7 +149,11 @@ Evaluating
 ==========
 
 Now that we can find and extract the tables from the source, we need to be able
-to evaluate them.
+to check them for correctness.
+
+The evaluate_table function will run each set of inputs through the given
+expression and compare the result with what was expected, recording any
+discrepancies.
 
 .. code-block:: python
 
@@ -171,7 +188,7 @@ to evaluate them.
 
         region.evaluated = errors
 
-Now the table can be evaluated:
+Now we can use the function to evaluate our table.
 
     >>> evaluate_table(region, document, {})
 
@@ -182,27 +199,29 @@ Yay!  There were no errors:
 
 What would happen if there were?
 
-    >>> source_with_errors = """\
-    ... The "or" operator
-    ... =================
-    ...
-    ... Here is an (erroneous) example of the "or" operator in action:
-    ...
-    ... =====  =====  ======
-    ... \      A or B
-    ... --------------------
-    ...   A      B    Result
-    ... =====  =====  ======
-    ... False  False  True
-    ... True   False  True
-    ... False  True   False
-    ... True   True   True
-    ... =====  =====  ======
-    ... """
+.. code-block:: python
 
-    >>> document = manuel.Document(source_with_errors, location='fake.txt')
-    >>> parse_tables(document)
-    >>> region = list(document)[1]
+    source_with_errors = """\
+    The "or" operator
+    =================
+    
+    Here is an (erroneous) example of the "or" operator in action:
+    
+    =====  =====  ======
+    \      A or B
+    --------------------
+      A      B    Result
+    =====  =====  ======
+    False  False  True
+    True   False  True
+    False  True   False
+    True   True   True
+    =====  =====  ======
+    """
+
+    document = manuel.Document(source_with_errors, location='fake.txt')
+    parse_tables(document)
+    region = list(document)[1]
 
 This time the evaluator records errors:
 
@@ -239,7 +258,7 @@ display the results in a readable fashion.
             region.formatted = header + sep + sep.join(messages)
 
 
-Now we can see how the formatted results look.
+We can see how the results are formatted.
 
     >>> format_table_errors(document)
     >>> print region.formatted,
