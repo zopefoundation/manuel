@@ -426,3 +426,141 @@ and the "insert_region_before" and "insert_region_after" methods of Documents.
      ('clone: 1, 2, 3\n', 'cloned to go before'),
      ("\nI want some copies of my clone.\n\nFor example, I'd like a clone before *here*.\n\nI'd also like a clone after *here*.\n", None),
      ('clone: 1, 2, 3\n', 'cloned to go after')]
+
+
+Enhancing Existing Manuels
+--------------------------
+
+Lets say that you'd like failed doctest examples to give more information about
+what went wrong.
+
+First we'll create an evaluater that includes pertinant variable binding
+information on failures.
+
+    >>> import doctest
+
+    >>> def informative_evaluater(region, document, globs):
+    ...     if not isinstance(region.parsed, doctest.Example):
+    ...         return
+    ...     if region.evaluated.getvalue():
+    ...         info = ''
+    ...         for name in sorted(globs):
+    ...             if name in region.parsed.source:
+    ...                 info += '\n    ' + name + ' = ' + repr(globs[name])
+    ...
+    ...         if info:
+    ...             region.evaluated.write('Additional Information:')
+    ...             region.evaluated.write(info)
+
+To do that we'll start with an instance of manuel.doctest.Manuel and add in our
+additional functionality.
+
+    >>> m = manuel.doctest.Manuel()
+    >>> m.add_evaluater(informative_evaluater)
+
+Now we'll create a document that includes a failing test.
+
+    >>> document = manuel.Document("""
+    ... Set up some variable bindings:
+    ...
+    ...     >>> a = 1
+    ...     >>> b = 2
+    ...     >>> c = 3
+    ...
+    ... Make an assertion:
+    ...
+    ...     >>> a + b
+    ...     5
+    ... """)
+
+    >>> document.process_with(m, globs={})
+    >>> print document.formatted()
+    File "<memory>", line 10, in <memory>
+    Failed example:
+        a + b
+    Expected:
+        5
+    Got:
+        3
+    Additional Information:
+        a = 1
+        b = 2
+
+Note how only the referenced variable bindings are displayed (i.e., "c" is not
+listed).  That's pretty nice, but the way interesting variables are identified
+is a bit of a hack.  For example, if a variable's name just happens to appear
+in the source (in a comment for example), it will be included in the output:
+
+    >>> document = manuel.Document("""
+    ... Set up some variable bindings:
+    ...
+    ...     >>> a = 1
+    ...     >>> b = 2
+    ...     >>> c = 3
+    ...
+    ... Make an assertion:
+    ...
+    ...     >>> a + b # doesn't mention "c"
+    ...     5
+    ... """)
+
+    >>> document.process_with(m, globs={})
+    >>> print document.formatted()
+    File "<memory>", line 10, in <memory>
+    Failed example:
+        a + b # doesn't mention "c"
+    Expected:
+        5
+    Got:
+        3
+    Additional Information:
+        a = 1
+        b = 2
+        c = 3
+
+Instead of a text-based apprach, lets use the built-in tokenize module to more
+robustly identify referenced variables.
+
+    >>> import StringIO
+    >>> import token
+    >>> import tokenize
+
+    >>> def informative_evaluater_2(region, document, globs):
+    ...     if not isinstance(region.parsed, doctest.Example):
+    ...         return
+    ...
+    ...     reader = StringIO.StringIO(region.source).readline
+    ...
+    ...     if region.evaluated.getvalue():
+    ...         vars = []
+    ...         for ttype, tval, _, _, _ in tokenize.generate_tokens(reader):
+    ...             if ttype == token.NAME:
+    ...                 vars.append(tval)
+    ...
+    ...         info = ''
+    ...         for name in sorted(globs):
+    ...             if name in vars:
+    ...                 info += '\n    ' + name + ' = ' + repr(globs[name])
+    ...
+    ...         if info:
+    ...             region.evaluated.write('Additional Information:')
+    ...             region.evaluated.write(info)
+
+    >>> m = manuel.doctest.Manuel()
+    >>> m.add_evaluater(informative_evaluater_2)
+
+Now when we have a failure, only the genuinely referenced variables will be
+included in the debugging information.
+
+    >>> document.process_with(m, globs={})
+    >>> print document.formatted()
+    File "<memory>", line 10, in <memory>
+    Failed example:
+        a + b # doesn't mention "c"
+    Expected:
+        5
+    Got:
+        3
+    Additional Information:
+        a = 1
+        b = 2
