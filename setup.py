@@ -21,7 +21,7 @@ setup(
     author_email='benji@benjiyork.com',
     description=
         'Manuel lets you combine traditional doctests with new test syntax '
-        'that you build yourself or is inlcuded in Manuel.',
+        'that you build yourself or is included in Manuel.',
     license='ZPL',
     install_requires=[
         'setuptools',
