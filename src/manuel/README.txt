@@ -529,13 +529,12 @@ robustly identify referenced variables.
     ...     if not isinstance(region.parsed, doctest.Example):
     ...         return
     ...
-    ...     reader = StringIO.StringIO(region.source).readline
-    ...
     ...     if region.evaluated.getvalue():
-    ...         vars = []
+    ...         vars = set()
+    ...         reader = StringIO.StringIO(region.source).readline
     ...         for ttype, tval, _, _, _ in tokenize.generate_tokens(reader):
     ...             if ttype == token.NAME:
-    ...                 vars.append(tval)
+    ...                 vars.add(tval)
     ...
     ...         info = ''
     ...         for name in sorted(globs):
