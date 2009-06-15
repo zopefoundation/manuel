@@ -252,8 +252,8 @@ And format the results.
     ''
 
 Oh, we didn't have any failing tests, so we got no output.  Let's try again
-with a failing test.  This time we'll use the process function to simplify
-things.
+with a failing test.  This time we'll use the "process_with" function to
+simplify things.
 
     >>> document = manuel.Document("""This is my
     ... doctest.
