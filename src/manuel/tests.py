@@ -14,6 +14,10 @@ from zope.testing import doctest
 def get_abs_path(p):
     def fake():
         pass
+    # this contorted dance is neccesitated by me wanting to be able to run the
+    # tests with "bin/py src/manuel/tests.py" since bin/py uses execfile, which
+    # means that __file__ -- which I'd normally use here -- will be "bin/py"
+    # not the path to *this* module
     here = os.path.dirname(fake.func_code.co_filename)
     return os.path.join(os.getcwd(), here, p)
 
@@ -41,5 +45,8 @@ def test_suite():
 
 test_suite.__test__ = False # tell nose not to treat this as a test case
 
-if __name__ == '__main__':
+def run_tests():
     unittest.TextTestRunner().run(test_suite())
+
+if __name__ == '__main__':
+    run_tests()
