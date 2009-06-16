@@ -1,11 +1,8 @@
+from setuptools import setup, find_packages
 import os
 
-from setuptools import setup, find_packages
-
 long_description = (
-    open(os.path.join('src', 'manuel', 'README.txt')).read()
-    #+ '\n\n'
-    #+ open(os.path.join('src', 'manuel', 'table-example.txt')).read()
+    open(os.path.join('README.txt')).read()
     + '\n\n'
     + open('CHANGES.txt').read()
     )

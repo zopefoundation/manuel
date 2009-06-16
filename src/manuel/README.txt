@@ -1,21 +1,11 @@
-Contents
-========
+Theory of Operation
+===================
 
-.. contents::
-
-
-Overview
-========
-
-In short, Manuel parses documents (tests), evaluates their contents, then
-formats the result of the evaluation.
-
-The core functionality is accessed through an instance of a Manuel object.  It
-is used to build up the handling of a document type.  Each phase has a
-corresponding slot to which various implementations are attached.
+Manuel parses documents (tests), evaluates their contents, then formats the
+result of the evaluation.  The functionality is accessed via the "manuel"
+package.
 
     >>> import manuel
-
 
 Parsing
 -------
@@ -32,7 +22,7 @@ containing one or more lines.
     >>> document = manuel.Document(source)
 
 For example purposes we will create a type of test that consists of a sequence
-of numbers so lets create a NumbersTest object to represent the parsed list.
+of numbers. Lets create a NumbersTest object to represent the parsed list.
 
     >>> class NumbersTest(object):
     ...     def __init__(self, description, numbers):
@@ -99,6 +89,8 @@ Regions must always consist of whole lines.
         ...
     ValueError: Regions must start at the begining of a line.
 
+.. more "whole-line" tests.
+
     >>> document.find_regions('three')
     Traceback (most recent call last):
         ...
@@ -149,22 +141,25 @@ Evaluation
 
 After a document has been parsed the resulting tests are evaluated.  Unlike
 parsing and formatting, evaluation is done one region at a time, in the order
-that the regions appear in the document.  Manuel provides another method to
-evaluate tests.  Lets define a function to evaluate NumberTests.  The function
-determines whether or not the numbers are in sorted order and records the
-result along with the description of the list of numbers.
+that the regions appear in the document.  Lets define a function to evaluate
+NumberTests.  The function determines whether or not the numbers are in sorted
+order and records the result along with the description of the list of numbers.
 
-    >>> class NumbersResult(object):
-    ...     def __init__(self, test, passed):
-    ...         self.test = test
-    ...         self.passed = passed
+.. code-block:: python
 
-    >>> def evaluate(region, document, globs):
-    ...     if not isinstance(region.parsed, NumbersTest):
-    ...         return
-    ...     test = region.parsed
-    ...     passed = sorted(test.numbers) == test.numbers
-    ...     region.evaluated = NumbersResult(test, passed)
+   class NumbersResult(object):
+       def __init__(self, test, passed):
+           self.test = test
+           self.passed = passed
+
+   def evaluate(region, document, globs):
+       if not isinstance(region.parsed, NumbersTest):
+           return
+       test = region.parsed
+       passed = sorted(test.numbers) == test.numbers
+       region.evaluated = NumbersResult(test, passed)
+
+.. a test of the above
 
     >>> for region in document:
     ...     evaluate(region, document, {})
@@ -183,17 +178,20 @@ it: manuel provides a method for formatting results.  We'll build one to format
 a message about whether or not our lists of numbers are sorted properly.  A
 formatting function returns None when it has no output, or a string otherwise.
 
-    >>> def format(document):
-    ...     for region in document:
-    ...         if not isinstance(region.evaluated, NumbersResult):
-    ...             continue
-    ...         result = region.evaluated
-    ...         if not result.passed:
-    ...             region.formatted = (
-    ...                 "the numbers aren't in sorted order: "
-    ...                 + ', '.join(map(str, result.test.numbers)))
+.. code-block:: python
 
-Since our test case passed we don't get anything out of the report function.
+    def format(document):
+        for region in document:
+            if not isinstance(region.evaluated, NumbersResult):
+                continue
+            result = region.evaluated
+            if not result.passed:
+                region.formatted = (
+                    "the numbers aren't in sorted order: "
+                    + ', '.join(map(str, result.test.numbers)))
+
+Since one of the test cases failed we get an appropriate message out of the
+formatter.
 
     >>> format(document)
     >>> [region.formatted for region in document]
@@ -211,7 +209,7 @@ bundle them together into a Manuel object.
 
 
 Doctests
-========
+--------
 
 We can use Manuel to run doctests.  Let's create a simple doctest to
 demonstrate with.
@@ -261,7 +259,6 @@ simplify things.
     ...     >>> 1 + 1
     ...     42
     ... """)
-
     >>> document.process_with(m, globs={})
     >>> print document.formatted()
     File "<memory>", line 4, in <memory>
@@ -301,14 +298,14 @@ Imported modules are added to the global namespace as well.
     ...
     ...     >>> string.digits
     ...     '0123456789'
-    ...     
+    ...
     ... """)
     >>> document.process_with(m, globs={})
     >>> print document.formatted()
 
 
 Combining Test Types
-====================
+--------------------
 
 Now that we have both doctests and the silly "sorted numbers" tests, lets
 create a single document that has both.
@@ -369,7 +366,7 @@ We can look at the formatted output to see that each of the two tests failed.
 
 
 Priorities
-==========
+----------
 
 Some functionality requires that code be called early or late in a phase.  The
 "timing" decorator allows either EARLY or LATE to be specified.
@@ -411,9 +408,9 @@ and the "insert_region_before" and "insert_region_after" methods of Documents.
     ... This is my clone:
     ...
     ... clone: 1, 2, 3
-    ... 
+    ...
     ... I want some copies of my clone.
-    ... 
+    ...
     ... For example, I'd like a clone before *here*.
     ...
     ... I'd also like a clone after *here*.
@@ -437,20 +434,22 @@ what went wrong.
 First we'll create an evaluater that includes pertinant variable binding
 information on failures.
 
-    >>> import doctest
+.. code-block:: python
 
-    >>> def informative_evaluater(region, document, globs):
-    ...     if not isinstance(region.parsed, doctest.Example):
-    ...         return
-    ...     if region.evaluated.getvalue():
-    ...         info = ''
-    ...         for name in sorted(globs):
-    ...             if name in region.parsed.source:
-    ...                 info += '\n    ' + name + ' = ' + repr(globs[name])
-    ...
-    ...         if info:
-    ...             region.evaluated.write('Additional Information:')
-    ...             region.evaluated.write(info)
+    import doctest
+
+    def informative_evaluater(region, document, globs):
+        if not isinstance(region.parsed, doctest.Example):
+            return
+        if region.evaluated.getvalue():
+            info = ''
+            for name in sorted(globs):
+                if name in region.parsed.source:
+                    info += '\n    ' + name + ' = ' + repr(globs[name])
+
+            if info:
+                region.evaluated.write('Additional Information:')
+                region.evaluated.write(info)
 
 To do that we'll start with an instance of manuel.doctest.Manuel and add in our
 additional functionality.
@@ -472,6 +471,9 @@ Now we'll create a document that includes a failing test.
     ...     >>> a + b
     ...     5
     ... """)
+
+When we run the document through our Manuel instance, we see the additional
+information.
 
     >>> document.process_with(m, globs={})
     >>> print document.formatted()

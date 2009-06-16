@@ -17,19 +17,13 @@ def test_suite():
     suite = unittest.TestSuite()
 
     tests = ['README.txt', 'footnote.txt', 'bugs.txt', 'code-block.txt',
-        'isolation.txt']
+        'isolation.txt', 'table-example.txt']
 
-    # Run the tests once with doctest.
-    suite.addTest(
-        doctest.DocFileSuite(optionflags=optionflags, checker=checker, *tests))
-
-    # Run them again with Manuel's doctest support.
+    # run the tests with Manuel's doctest support
     m = manuel.doctest.Manuel(optionflags=optionflags, checker=checker)
+    # add in the codeblock extension
+    m.extend(manuel.codeblock.Manuel())
+    # build the test suite
     suite.addTest(manuel.testing.TestSuite(m, *tests))
 
-    # Run the table example with doctest plus the codeblock extension.
-    m = manuel.doctest.Manuel(optionflags=optionflags, checker=checker)
-    m.extend(manuel.codeblock.Manuel())
-    suite.addTest(manuel.testing.TestSuite(
-        m, 'table-example.txt'))
     return suite

@@ -1,0 +1,15 @@
+====================
+Manuel documentation
+====================
+
+.. toctree::
+    :maxdepth: 1
+    :numbered:
+
+    intro.txt
+    manuel/README.txt
+    manuel/table-example.txt
+    manuel/code-block.txt
+    manuel/footnote.txt
+    manuel/isolation.txt
+    manuel/bugs.txt

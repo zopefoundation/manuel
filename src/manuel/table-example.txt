@@ -140,13 +140,12 @@ If we parse the Docuement we can see that the table was recognized.
     False  True   True
     True   True   True
     =====  =====  ======
-
     >>> region.parsed
     <Table object at ...>
 
 
 Evaluating
-==========
+----------
 
 Now that we can find and extract the tables from the source, we need to be able
 to check them for correctness.
@@ -231,7 +230,7 @@ This time the evaluator records errors:
 
 
 Formatting Errors
-=================
+-----------------
 
 Now that we can parse the tables and evaluate them, we need to be able to
 display the results in a readable fashion.
@@ -268,17 +267,22 @@ We can see how the results are formatted.
 
 
 All Together Now
-================
+----------------
 
 All the pieces (parsing, evaluating, and formatting) are available now, so we
 just have to put them together into a single "Manuel" object.
 
-    >>> m = manuel.Manuel(parsers=[parse_tables], evaluaters=[evaluate_table],
-    ...     formatters=[format_table_errors])
+.. code-block:: python
 
-Now we can create a fresh document and tell it to do all the above steps with
-our Manuel instance.
+    class Manuel(manuel.Manuel):
+        def __init__(self):
+            manuel.Manuel.__init__(self, [parse_tables], [evaluate_table],
+                [format_table_errors])
 
+Now we can create a fresh document and tell it to do all the above steps
+(parse, evaluate, format) an instance of our table example Manuel.
+
+    >>> m = Manuel()
     >>> document = manuel.Document(source_with_errors, location='fake.txt')
     >>> document.process_with(m, globs={})
     >>> print document.formatted(),
@@ -292,15 +296,32 @@ Of course, if there were no errors, nothing would be reported:
     >>> document.process_with(m, globs={})
     >>> print document.formatted()
 
-If we wanted to use our new table tests in a file named "table-example.txt" and
-include them in a unittest TestSuite, it would look something like this:
 
+Unittest Integration
+--------------------
+
+If we wanted to use our new table tests in conjunction with unittest, we could
+put the code above in tableexample.py.  Then to use the new syntax in a test
+file named "my-table-tests.txt" we can create a file named tests.py and build a
+TestSuite like so:
+
+.. this next chunk isn't actually executed by tests, so watch out
 .. code-block:: python
 
     import unittest
     import manuel.testing
+    import tableexample
 
-    suite = unittest.TestSuite()
+    def test_suite():
+        m = tableexample.Manuel()
+        return manuel.testing.TestSuite(m, 'my-table-tests.txt')
+
+.. this next bit is actually a reST comment, but it is run during tests anyway
+    (note the single colon instead of double colon)
+
+.. code-block: python
+
+    import unittest
     suite = manuel.testing.TestSuite(m, 'table-example.txt')
 
 If the tests are run (e.g., by a test runner), everything works.

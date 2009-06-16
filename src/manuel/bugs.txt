@@ -1,8 +1,5 @@
-Miscellaneous Tests
-===================
-
 Fixed Bugs
-----------
+==========
 
 If a line of text matches both a "start" and "end" regular expression, no
 exception should be raised.

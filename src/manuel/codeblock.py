@@ -3,7 +3,10 @@ import manuel
 import textwrap
 
 CODEBLOCK_START = re.compile(
-    r'^\.\.\s*code-block::\s*python\s*$', re.MULTILINE)
+    r'(?<=\n\n)\.\.\s*code-block::?\s*python\s*\n', re.DOTALL)
+
+# XXX document code-blocks that don't get executed and code-blocks that are
+# really comments but get executed anyway (perhaps with better syntax for both)
 
 # XXX should probably take end-of-file into account
 CODEBLOCK_END = re.compile(r'^\S.*$', re.MULTILINE)

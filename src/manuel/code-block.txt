@@ -1,4 +1,4 @@
-Code blocks
+Code Blocks
 ===========
 
 `Sphinx <http://sphinx.pocoo.org/>`_ and other docutils `extensions
