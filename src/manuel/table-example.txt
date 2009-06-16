@@ -1,3 +1,5 @@
+.. _fit-table-example:
+
 FIT Table Example
 =================
 

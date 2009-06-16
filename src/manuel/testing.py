@@ -1,11 +1,16 @@
 from zope.testing import doctest
 import manuel
+import os.path
 import unittest
 
 
 __all__ = ['TestSuite']
 
 class TestCase(unittest.TestCase):
+
+    __test__ = False # tell nose not to treat this as a test case
+
+    # XXX this is broken, see the unittest.TestCase docstring
     def __init__(self, m, document, setUp=None, tearDown=None, globs=None):
         unittest.TestCase.__init__(self)
         self.manuel = m
@@ -92,8 +97,13 @@ def TestSuite(m, *paths, **kws):
             break
 
     for path in paths:
-        abs_path = doctest._module_relative_path(calling_module, path)
+        if os.path.isabs(path):
+            abs_path = path
+        else:
+            abs_path = doctest._module_relative_path(calling_module, path)
         document = manuel.Document(open(abs_path).read(), location=abs_path)
         suite.addTest(TestCase(m, document, **kws))
 
     return suite
+
+TestSuite.__test__ = False # tell nose not to treat this as a test case

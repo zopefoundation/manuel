@@ -1,3 +1,5 @@
+.. _theory-of-operation:
+
 Theory of Operation
 ===================
 

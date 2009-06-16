@@ -2,12 +2,12 @@ Introduction
 ============
 
 Manuel lets you mix and match traditional doctests with new test syntax that
-you create or is included in Manuel.
+either you create or comes bundled with Manuel.
 
 For example, if you've ever wanted to include a large chunk of Python in a
 doctest but were irritated by all the ">>>" and "..." prompts required, you'd
-like the "manuel.codeblock" module.  It lets you include code using Sphinx-style
-"..  code-block:: python" directives, like so:
+like the "manuel.codeblock" module.  It lets you execute code using
+Sphinx-style "..  code-block:: python" directives, like so:
 
 .. code-block:: python
 
@@ -18,8 +18,8 @@ like the "manuel.codeblock" module.  It lets you include code using Sphinx-style
 
 Incidentally, the implementation of manuel.codeblock is only 24 lines of code.
 
-For an example of creating your own test syntax, take a look at
-table-example.txt or for full details, README.txt.
+For an example of creating your own test syntax, take a look at the
+:ref:`fit-table-example` or for all the details, :ref:`theory-of-operation`.
 
 
 Included Functionality
@@ -27,12 +27,18 @@ Included Functionality
 
 Manuel includes several extentions to doctest out of the box.
 
-manuel.codeblock
+:ref:`manuel.codeblock <code-blocks>`
     executes code in ".. code-block:: python" blocks
 
-manuel.footnote
+:ref:`manuel.footnote <footnotes>`
     executes code in reST-style footnodes each time they're referenced (good
     for getting incedental code out of the main flow of a document)
 
-manuel.isolation
+:ref:`manuel.isolation <isolation>`
     makes it easier to have test isolation in doctests
+
+
+Getting Started
+===============
+
+If you already have XXX

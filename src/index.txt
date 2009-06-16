@@ -9,7 +9,7 @@ Manuel documentation
     intro.txt
     manuel/README.txt
     manuel/table-example.txt
-    manuel/code-block.txt
+    manuel/codeblock.txt
     manuel/footnote.txt
     manuel/isolation.txt
     manuel/bugs.txt

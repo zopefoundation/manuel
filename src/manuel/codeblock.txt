@@ -1,3 +1,5 @@
+.. _code-blocks:
+
 Code Blocks
 ===========
 
@@ -41,4 +43,4 @@ doctest handler.
     >>> import manuel.doctest
     >>> m.extend(manuel.doctest.Manuel())
     >>> document.process_with(m, globs={})
-    >>> print document.formatted()
+    >>> print document.formatted(),
