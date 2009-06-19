@@ -33,7 +33,7 @@ section.
 Included Functionality
 ======================
 
-Manuel includes quite a bit of functionality out of the box.
+Manuel includes quite a bit of functionality out of the box:
 
 :ref:`manuel.codeblock <code-blocks>`
     executes code in ".. code-block:: python" blocks
