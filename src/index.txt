@@ -7,9 +7,12 @@ Manuel documentation
     :numbered:
 
     intro.txt
+    getting-started.txt
+    manuel/codeblock.txt
+    manuel/doctest.txt
+    manuel/footnote.txt
+    manuel/ignore.txt
+    manuel/isolation.txt
     manuel/README.txt
     manuel/table-example.txt
-    manuel/codeblock.txt
-    manuel/footnote.txt
-    manuel/isolation.txt
     manuel/bugs.txt

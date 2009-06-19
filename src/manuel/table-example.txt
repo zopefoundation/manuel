@@ -3,6 +3,8 @@
 FIT Table Example
 =================
 
+Here is an example of writing a relatively complex Manuel plug-in.
+
 Occasionally when writing a doctest, you want a better way to express a test
 than doctest by itself provides.
 
@@ -307,7 +309,7 @@ put the code above in tableexample.py.  Then to use the new syntax in a test
 file named "my-table-tests.txt" we can create a file named tests.py and build a
 TestSuite like so:
 
-.. this next chunk isn't actually executed by tests, so watch out
+.. ignore-next-block
 .. code-block:: python
 
     import unittest

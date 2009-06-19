@@ -15,13 +15,13 @@ For example a block of Python would be prefixed with ".. code-block:: python"::
 
         print 'hello'
 
-The manuel.codeblock module provides the ability to execute the contents of
-Python code-blocks.
+The :mod:`manuel.codeblock` module provides the ability to execute the contents
+of Python code-blocks.
 
     >>> import manuel.codeblock
     >>> m = manuel.codeblock.Manuel()
 
-Let's create a reST document with a code block.
+.. Let's create a reST document with a code block.
 
     >>> document = manuel.Document("""
     ... Here is a code-block:
@@ -34,13 +34,83 @@ Let's create a reST document with a code block.
     ...
     ...     >>> print x
     ...     hello
-    ...     
+    ...
     ... """)
 
-Since the above document mixes code-blocks and doctests, we'll mix in the
-doctest handler.
+.. Since the above document mixes code-blocks and doctests, we'll mix in the
+   doctest handler.
 
     >>> import manuel.doctest
     >>> m.extend(manuel.doctest.Manuel())
     >>> document.process_with(m, globs={})
+
+..  Both code blocks were found (for a total of five regions -- text, block,
+    text, block, and text):
+
+    >>> len(list(document))
+    5
+
+.. We can see that none of the tests in the document failed:
+
     >>> print document.formatted(),
+
+If the code-block generates some sort of error...
+
+    >>> document = manuel.Document("""\
+    ... .. code-block:: python
+    ...
+    ...     print does_not_exist
+    ... """)
+
+.. the document above was specially formulated to have nothing before or after
+   the code-block
+
+    >>> document.source.startswith('.. code-block')
+    True
+    >>> document.source.endswith('print does_not_exist\n')
+    True
+
+...that error will be reported:
+
+    >>> document.process_with(m, globs={})
+    Traceback (most recent call last):
+        ...
+    NameError: name 'does_not_exist' is not defined
+
+If you find that you want to include a code-block in a document but don't want
+Manuel to execute it, use :ref:`manuel.ignore <ignore>` to ignore that
+particular block.
+
+
+Commented-out Blocks
+--------------------
+
+At times you'll want to have a block of code that is executed but not displayed
+in the rendered document (like some setup for later examples).
+
+When using doctest's native format (">>>") that's easy to do, you just put the
+code in a reST comment, like so:
+
+.. ignore-next-block
+
+::
+
+    .. this is some setup, it is hidden in a reST comment
+
+         >>> do_something()
+         >>> do_something_else()
+
+However, if you want to include a relatively large chunk of Python, you'd
+rather use a code-block, but that means that it will be included in the
+rendered document.  Instead, :mod:`manuel.codeblock` also understands a variant
+of the code-block directive (".. code-block:: python") that is actually a reST
+comment: ".. code-block:python" (note the single colon)::
+
+    .. code-block: python
+
+       do_something()
+       do_something_else()
+
+.. warning:: It would be very easy to confuse the "real" code-block directive
+   with the it's-really-a-reSt-comment form.  Perhaps a more distinct syntax
+   will be introduced in the future.

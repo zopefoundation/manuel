@@ -8,8 +8,6 @@ __all__ = ['TestSuite']
 
 class TestCase(unittest.TestCase):
 
-    __test__ = False # tell nose not to treat this as a test case
-
     # XXX this is broken, see the unittest.TestCase docstring
     def __init__(self, m, document, setUp=None, tearDown=None, globs=None):
         unittest.TestCase.__init__(self)
@@ -105,5 +103,3 @@ def TestSuite(m, *paths, **kws):
         suite.addTest(TestCase(m, document, **kws))
 
     return suite
-
-TestSuite.__test__ = False # tell nose not to treat this as a test case

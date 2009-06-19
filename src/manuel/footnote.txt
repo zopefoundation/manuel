@@ -4,7 +4,7 @@
 Footnotes
 =========
 
-The manuel.footnote module provides an implementation of reST footnote
+The :mod:`manuel.footnote` module provides an implementation of reST footnote
 handling.
 
     >>> import manuel.footnote
@@ -38,16 +38,11 @@ We'll try the footnotes out by combining them with doctests.
     ...
     ...     >>> raise RuntimeError('nooooo!')
     ... """)
-
     >>> document.process_with(m, globs={})
 
 Since all the examples in the doctest above are correct, we expect no errors.
 
-    >>> for region in document:
-    ...     if region.formatted:
-    ...         print '-'*70
-    ...         print region.formatted,
-
+    >>> print document.formatted(),
 
 The order of examples in footnotes is preserved.  If not, the document below
 will generate an error because "a" won't be defined when "b = a + 1" is

@@ -70,7 +70,7 @@ def check_region_start(region, match):
 
 def check_region_end(region, match):
     if match.end() != len(region.source) \
-    and region.source[match.end()] != '\n':
+    and region.source[match.end()-1] != '\n':
         raise ValueError(
             'Regions must end at the ending of a line.')
 
@@ -124,6 +124,12 @@ def sort_handlers(handlers):
     return sorted(handlers, key=key)
 
 
+def find_end_of_line(s):
+    end = 0
+    while len(s) < end and s[end] != '\n':
+        end += 1
+    return end
+
 class Document(object):
 
     def __init__(self, source, location='<memory>'):
@@ -155,7 +161,7 @@ class Document(object):
 
                 if end is None:
                     end_match = None
-                    check_region_end(region, start_match)
+
                     text = start_match.group()
                 else:
                     end_match = end.search(region.source, start_match.end())
@@ -163,8 +169,9 @@ class Document(object):
                     # couldn't find a match for the end re, try again
                     if end_match is None:
                         continue
-                    check_region_end(region, end_match)
-                    text = region.source[start_match.start():end_match.end()]
+                    end_position = end_match.end() + \
+                        find_end_of_line(region.source[end_match.end():])
+                    text = region.source[start_match.start():end_position]
 
                 if text[-1] != '\n':
                     text += '\n'

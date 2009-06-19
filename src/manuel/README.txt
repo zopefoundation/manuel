@@ -4,7 +4,7 @@ Theory of Operation
 ===================
 
 Manuel parses documents (tests), evaluates their contents, then formats the
-result of the evaluation.  The functionality is accessed via the "manuel"
+result of the evaluation.  The functionality is accessed via the :mod:`manuel`
 package.
 
     >>> import manuel
@@ -93,11 +93,6 @@ Regions must always consist of whole lines.
 
 .. more "whole-line" tests.
 
-    >>> document.find_regions('three')
-    Traceback (most recent call last):
-        ...
-    ValueError: Regions must end at the ending of a line.
-
     >>> document.find_regions(
     ...     re.compile('ne:.*$', re.MULTILINE),
     ...     re.compile('^one:.*$', re.MULTILINE),
@@ -105,14 +100,6 @@ Regions must always consist of whole lines.
     Traceback (most recent call last):
         ...
     ValueError: Regions must start at the begining of a line.
-
-    >>> document.find_regions(
-    ...     re.compile('^one:.*$', re.MULTILINE),
-    ...     re.compile('^three:', re.MULTILINE),
-    ...     )
-    Traceback (most recent call last):
-        ...
-    ValueError: Regions must end at the ending of a line.
 
 Now we can register a parser that will identify the regions we're interested in
 and create NumbersTest objects from the source text.
@@ -176,7 +163,7 @@ Formatting
 ----------
 
 Once the evaluation phase is completed the results are formatted.  You guessed
-it: manuel provides a method for formatting results.  We'll build one to format
+it: Manuel provides a method for formatting results.  We'll build one to format
 a message about whether or not our lists of numbers are sorted properly.  A
 formatting function returns None when it has no output, or a string otherwise.
 
@@ -224,8 +211,8 @@ demonstrate with.
     ... """
     >>> document = manuel.Document(source)
 
-The manuel.doctest module has handlers for the various phases.  First we'll
-look at parsing.
+The :mod:`manuel.doctest` module has handlers for the various phases.  First
+we'll look at parsing.
 
     >>> import manuel.doctest
     >>> m = manuel.doctest.Manuel()
@@ -309,7 +296,7 @@ Imported modules are added to the global namespace as well.
 Combining Test Types
 --------------------
 
-Now that we have both doctests and the silly "sorted numbers" tests, lets
+Now that we have both doctests and the silly "sorted numbers" tests, let's
 create a single document that has both.
 
     >>> document = manuel.Document("""
@@ -453,8 +440,8 @@ information on failures.
                 region.evaluated.write('Additional Information:')
                 region.evaluated.write(info)
 
-To do that we'll start with an instance of manuel.doctest.Manuel and add in our
-additional functionality.
+To do that we'll start with an instance of :mod:`manuel.doctest.Manuel` and add
+in our additional functionality.
 
     >>> m = manuel.doctest.Manuel()
     >>> m.add_evaluater(informative_evaluater)
@@ -522,7 +509,7 @@ in the source (in a comment for example), it will be included in the output:
         b = 2
         c = 3
 
-Instead of a text-based apprach, lets use the built-in tokenize module to more
+Instead of a text-based apprach, let's use the built-in tokenize module to more
 robustly identify referenced variables.
 
     >>> import StringIO

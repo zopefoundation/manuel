@@ -2,6 +2,7 @@ from zope.testing import renormalizing
 import manuel
 import manuel.codeblock
 import manuel.doctest
+import manuel.ignore
 import manuel.testing
 import os.path
 import re
@@ -30,23 +31,18 @@ def test_suite():
     suite = unittest.TestSuite()
 
     tests = ['README.txt', 'footnote.txt', 'bugs.txt', 'codeblock.txt',
-        'isolation.txt', 'table-example.txt']
+        'isolation.txt', 'table-example.txt', '../getting-started.txt',
+        'ignore.txt']
 
     tests = map(get_abs_path, tests)
 
-    # run the tests with Manuel's doctest support
-    m = manuel.doctest.Manuel(optionflags=optionflags, checker=checker)
-    # add in the codeblock extension
+    m = manuel.ignore.Manuel()
+    m.extend(manuel.doctest.Manuel(optionflags=optionflags, checker=checker))
     m.extend(manuel.codeblock.Manuel())
-    # build the test suite
     suite.addTest(manuel.testing.TestSuite(m, *tests))
 
     return suite
 
-test_suite.__test__ = False # tell nose not to treat this as a test case
-
-def run_tests():
-    unittest.TextTestRunner().run(test_suite())
 
 if __name__ == '__main__':
-    run_tests()
+    unittest.TextTestRunner().run(test_suite())

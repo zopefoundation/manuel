@@ -1,0 +1,56 @@
+Getting Started
+===============
+
+The simplest way to get started with Manuel is to create a script to run your
+tests, like so:
+
+.. code-block:: python
+
+    import manuel.codeblock
+    import manuel.doctest
+    import manuel.testing
+    import unittest
+
+    def test_suite():
+        m = manuel.doctest.Manuel()
+        m.extend(manuel.codeblock.Manuel())
+        return manuel.testing.TestSuite(m, 'test-one.txt', 'test-two.txt')
+
+    if __name__ == '__main__':
+        unittest.TextTestRunner().run(test_suite())
+
+
+Using zope.testing
+------------------
+
+If you want to use zope.testing's test runner (usable stand-alone, it isn't
+dependent on the Zope application server), you can add Manuel tests to the
+TestSuite objects you're already creating.
+
+.. code-block:: python
+
+    import manuel.codeblock
+    import manuel.doctest
+    import manuel.testing
+
+    def test_suite():
+        suite = unittest.TestSuite()
+
+        # here you add your other tests to the suite...
+
+        # now you can add the Manuel tests
+        m = manuel.doctest.Manuel()
+        m.extend(manuel.codeblock.Manuel())
+        suite.addTest(manuel.testing.TestSuite(m,
+            'test-one.txt', 'test-two.txt'))
+
+        return suite
+
+
+Others
+------
+
+If you know how to make Manuel work with other test runners, please `send me an
+email`_.
+
+.. _send me an email: benji+manuel@benjiyork.com
