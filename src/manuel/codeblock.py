@@ -2,9 +2,6 @@ import re
 import manuel
 import textwrap
 
-# XXX document code-blocks that are really comments but get executed anyway
-# (perhaps with better syntax)
-
 CODEBLOCK_START = re.compile(r'^\.\.\s*code-block::?\s*python\b', re.MULTILINE)
 CODEBLOCK_END = re.compile(r'(\n\Z|\n(?=\S))')
 

@@ -43,8 +43,6 @@ checkers <http://docs.python.org/library/doctest.html#outputchecker-objects>`_
 
 .. note:: :mod:`zope.testing.renormalizing` provides an :class:`OutputChecker`
    for smoothing out differences between actual and expected output for things
-   that are hard to control (like memory addresses and time) using regular
-   expressions.  See the `module's doctests
-   <http://svn.zope.org/zope.testing/trunk/src/zope/testing/renormalizing.py?view=markup>`_
+   that are hard to control (like memory addresses and time).  See the
+   `module's doctests <http://svn.zope.org/zope.testing/trunk/src/zope/testing/renormalizing.py?view=markup>`_
    for more information on how it works.
-
