@@ -28,7 +28,7 @@ their own right.  All the included plug-ins are listed in the next section.
 For a large example of creating test syntax, take a look at the
 :ref:`fit-table-example` or for all the details, :ref:`theory-of-operation`.
 
-Once you've decided to use Manuel, see the :ref:`getting-started` section.
+To see how to get Manuel wired up see the :ref:`getting-started` section.
 
 
 Included Functionality
