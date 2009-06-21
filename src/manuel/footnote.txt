@@ -13,7 +13,7 @@ handling.
 We'll try the footnotes out by combining them with doctests.
 
     >>> import manuel.doctest
-    >>> m.extend(manuel.doctest.Manuel())
+    >>> m += manuel.doctest.Manuel()
     >>> import manuel
     >>> document = manuel.Document("""\
     ... Here we reference a footnote. [1]_

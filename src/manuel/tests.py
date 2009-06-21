@@ -37,8 +37,8 @@ def test_suite():
     tests = map(get_abs_path, tests)
 
     m = manuel.ignore.Manuel()
-    m.extend(manuel.doctest.Manuel(optionflags=optionflags, checker=checker))
-    m.extend(manuel.codeblock.Manuel())
+    m += manuel.doctest.Manuel(optionflags=optionflags, checker=checker)
+    m += manuel.codeblock.Manuel()
     suite.addTest(manuel.testing.TestSuite(m, *tests))
 
     return suite

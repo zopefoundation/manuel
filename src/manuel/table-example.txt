@@ -300,25 +300,9 @@ Of course, if there were no errors, nothing would be reported:
     >>> document.process_with(m, globs={})
     >>> print document.formatted()
 
-
-Unittest Integration
---------------------
-
-If we wanted to use our new table tests in conjunction with unittest, we could
-put the code above in tableexample.py.  Then to use the new syntax in a test
-file named "my-table-tests.txt" we can create a file named tests.py and build a
-TestSuite like so:
-
-.. ignore-next-block
-.. code-block:: python
-
-    import unittest
-    import manuel.testing
-    import tableexample
-
-    def test_suite():
-        m = tableexample.Manuel()
-        return manuel.testing.TestSuite(m, 'my-table-tests.txt')
+If we wanted to use instances of our Manuel object in a test, we would follow
+the directions in :ref:`getting-started`, importing Manuel from the module
+where we placed the code, just like any other Manuel plug-in.
 
 .. this next bit is actually a reST comment, but it is run during tests anyway
     (note the single colon instead of double colon)
@@ -328,7 +312,8 @@ TestSuite like so:
     import unittest
     suite = manuel.testing.TestSuite(m, 'table-example.txt')
 
-If the tests are run (e.g., by a test runner), everything works.
+.. run this file through the Manuel instance constructed above to ensure it
+   actually works when given a real file to process
 
     >>> suite.run(unittest.TestResult())
     <unittest.TestResult run=1 errors=0 failures=0>

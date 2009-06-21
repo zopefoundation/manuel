@@ -315,7 +315,14 @@ class Manuel(object):
     def add_formatter(self, formatter):
         self.formatters.append(formatter)
 
-    def extend(self, other):
+    def __extend(self, other):
         self.parsers.extend(other.parsers)
         self.evaluaters.extend(other.evaluaters)
         self.formatters.extend(other.formatters)
+
+    def __add__(self, other):
+        m = Manuel()
+        m.__extend(self)
+        m.__extend(other)
+        return m
+

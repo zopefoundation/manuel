@@ -42,8 +42,8 @@ Because Manuel plug-ins are executed in the order they are accumulated, we want
     import manuel.ignore
     import manuel.doctest
     m = manuel.ignore.Manuel()
-    m.extend(manuel.codeblock.Manuel())
-    m.extend(manuel.doctest.Manuel())
+    m += manuel.codeblock.Manuel()
+    m += manuel.doctest.Manuel()
 
 If we add an ignore marker to the block we don't want processed...
 

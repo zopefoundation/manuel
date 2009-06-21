@@ -1,8 +1,33 @@
+.. _getting-started:
+
 Getting Started
 ===============
 
-The simplest way to get started with Manuel is to create a script to run your
-tests, like so:
+The plug-ins used for a test are composed together using the "+" operator.
+Let's say you wanted a test that used doctest syntax as well as footnotes.  You
+would create a Manuel instance to use like this:
+
+.. code-block:: python
+
+    import manuel.doctest
+    import manuel.footnote
+
+    m = manuel.doctest.Manuel() + manuel.footnote.Manuel()
+
+You would then pass the Manuel instance to a :class:`manuel.testing.TestSuite`,
+including the names of documents you want to process:
+
+.. ignore-next-block
+.. code-block:: python
+
+    manuel.testing.TestSuite(m, 'test-one.txt', 'test-two.txt')
+
+
+Using unittest
+--------------
+
+The simplest way to get started with Manuel is to use :mod:`unittest` to run
+your tests:
 
 .. code-block:: python
 
@@ -13,7 +38,7 @@ tests, like so:
 
     def test_suite():
         m = manuel.doctest.Manuel()
-        m.extend(manuel.codeblock.Manuel())
+        m += manuel.codeblock.Manuel()
         return manuel.testing.TestSuite(m, 'test-one.txt', 'test-two.txt')
 
     if __name__ == '__main__':
@@ -23,9 +48,13 @@ tests, like so:
 Using zope.testing
 ------------------
 
-If you want to use zope.testing's test runner (usable stand-alone, it isn't
-dependent on the Zope application server), you can add Manuel tests to the
-TestSuite objects you're already creating.
+If you want to use a more featurfull test runner you can use zope.testing's
+test runner (usable stand-alone -- it isn't dependent on the Zope application
+server).  Create a file named :file:`tests.py` with a :func:`test_setup`
+function that returns a test suite.
+
+The suite can be either a :class:`manuel.testing.TestSuite` object or a
+:class:`unittest.TestSuite` as demonstrated below.
 
 .. code-block:: python
 
@@ -40,7 +69,7 @@ TestSuite objects you're already creating.
 
         # now you can add the Manuel tests
         m = manuel.doctest.Manuel()
-        m.extend(manuel.codeblock.Manuel())
+        m += manuel.codeblock.Manuel()
         suite.addTest(manuel.testing.TestSuite(m,
             'test-one.txt', 'test-two.txt'))
 
@@ -50,7 +79,7 @@ TestSuite objects you're already creating.
 Others
 ------
 
-If you know how to make Manuel work with other test runners, please `send me an
-email`_.
+If you figure out how to make Manuel work with other test runners (nose,
+py.test, etc.), please `send me an email`_ and I'll expand this section.
 
 .. _send me an email: benji+manuel@benjiyork.com

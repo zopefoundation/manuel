@@ -319,7 +319,7 @@ the number list testing on top.
 Since we already have a Manuel instance configured for our "sorted numbers"
 tests, we can extend the built-in doctest configuration with it.
 
-    >>> m.extend(sorted_numbers_manuel)
+    >>> m += sorted_numbers_manuel
 
 Now we can process our source that combines both types of tests and see what
 we get.

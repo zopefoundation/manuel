@@ -18,8 +18,9 @@ For example a block of Python would be prefixed with ".. code-block:: python"::
 The :mod:`manuel.codeblock` module provides the ability to execute the contents
 of Python code-blocks.
 
-    >>> import manuel.codeblock
-    >>> m = manuel.codeblock.Manuel()
+.. code-block:: python
+
+    import manuel.codeblock
 
 .. Let's create a reST document with a code block.
 
@@ -41,26 +42,29 @@ of Python code-blocks.
    doctest handler.
 
     >>> import manuel.doctest
-    >>> m.extend(manuel.doctest.Manuel())
+    >>> m = manuel.codeblock.Manuel()
+    >>> m += manuel.doctest.Manuel()
     >>> document.process_with(m, globs={})
 
-..  Both code blocks were found (for a total of five regions -- text, block,
+    Both code blocks were found (for a total of five regions -- text, block,
     text, block, and text):
 
     >>> len(list(document))
     5
 
-.. We can see that none of the tests in the document failed:
+    We can see that none of the tests in the document failed:
 
     >>> print document.formatted(),
 
 If the code-block generates some sort of error...
 
-    >>> document = manuel.Document("""\
-    ... .. code-block:: python
-    ...
-    ...     print does_not_exist
-    ... """)
+.. code-block:: python
+
+    document = manuel.Document("""\
+    .. code-block:: python
+    
+        print does_not_exist
+    """)
 
 .. the document above was specially formulated to have nothing before or after
    the code-block
@@ -72,6 +76,7 @@ If the code-block generates some sort of error...
 
 ...that error will be reported:
 
+    >>> m = manuel.codeblock.Manuel()
     >>> document.process_with(m, globs={})
     Traceback (most recent call last):
         ...

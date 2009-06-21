@@ -12,6 +12,7 @@ def find_ignores(document):
         document.replace_region(region, None)
         document.remove_region(region)
 
+
 class Manuel(manuel.Manuel):
     def __init__(self):
         manuel.Manuel.__init__(self, [find_ignores])

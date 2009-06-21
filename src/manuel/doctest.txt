@@ -25,7 +25,7 @@ you write yourself).
     import manuel.codeblock
 
     m = manuel.doctest.Manuel()
-    m.extend(manuel.codeblock.Manuel())
+    m += manuel.codeblock.Manuel()
     suite = manuel.testing.TestSuite(m, 'my-doctest-with-code-blocks.txt')
 
 The :class:`manuel.doctest.Manuel` constructor also takes :data:`optionflags`

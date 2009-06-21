@@ -39,7 +39,7 @@ Since the above document mixes isolation and doctests, we'll mix in the doctest
 handler.
 
     >>> import manuel.doctest
-    >>> m.extend(manuel.doctest.Manuel())
+    >>> m += manuel.doctest.Manuel()
 
 We can see that after the globals have been reset, the "print x" line raises an
 error.

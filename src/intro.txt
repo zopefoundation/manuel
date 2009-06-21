@@ -3,8 +3,8 @@ Introduction
 
 Manuel lets you mix and match traditional doctests with custom test syntax.
 
-Several plug-ins that provide new syntaxes are included.  You can also make
-your own.
+Manuel include plug-ins that provide new test syntax, and you create make your
+own.
 
 For example, if you've ever wanted to include a large chunk of Python in a
 doctest but were irritated by all the ">>>" and "..." prompts required, you'd
@@ -22,12 +22,13 @@ this::
 Incidentally, the implementation of :mod:`manuel.codeblock` is only 22 lines of
 code.
 
+The plug-ins included in Manuel make good examples while being quite useful in
+their own right.  All the included plug-ins are listed in the next section.
+
 For a large example of creating test syntax, take a look at the
 :ref:`fit-table-example` or for all the details, :ref:`theory-of-operation`.
 
-Also, the plug-ins included in Manuel make good examples while being quite
-useful in their own right.  All the included plug-ins are listed in the next
-section.
+Once you've decided to use Manuel, see the :ref:`getting-started` section.
 
 
 Included Functionality
