@@ -18,8 +18,6 @@ We can use Manuel to write a parser that can read the tables, an evaluator that
 can check to see if the assertions made in the tables match reality, and a
 formatter to display the results if they don't.
 
-    >>> import manuel
-
 We'll use `reST <http://docutils.sourceforge.net/rst.html>`_ tables as the
 table format.  The table source will look like this::
 
@@ -34,29 +32,10 @@ table format.  The table source will look like this::
     True   True   True
     =====  =====  ======
 
-When rendered, it will look like this:
+.. -> example_table_1
 
-=====  =====  ======
-\      A or B
---------------------
-  A      B    Result
-=====  =====  ======
-False  False  False
-True   False  True
-False  True   True
-True   True   True
-=====  =====  ======
+When rendered to HTML, it will look like this:
 
-The source for our test...
-
-.. code-block:: python
-
-    source = """\
-    The "or" operator
-    =================
-    
-    Here is an example of the "or" operator in action:
-    
     =====  =====  ======
     \      A or B
     --------------------
@@ -67,12 +46,42 @@ The source for our test...
     False  True   True
     True   True   True
     =====  =====  ======
-    """
 
-...will be stored in a Manuel Document:
+.. -> example_table_2
+
+    >>> example_table_1 == example_table_2
+    True
+
+
+Documents
+---------
+
+Manuel plug-ins operate on instances of :class:`manuel.Document`.  As an
+example we'll construct one with these contents::
+
+    The "or" operator
+    =================
+
+    Here is an example of the "or" operator in action:
+
+    =====  =====  ======
+    \      A or B
+    --------------------
+      A      B    Result
+    =====  =====  ======
+    False  False  False
+    True   False  True
+    False  True   True
+    True   True   True
+    =====  =====  ======
+
+.. -> source
+
+Manuel plug-ins operate on instances of :class:`manuel.Document`.
 
 .. code-block:: python
 
+    import manuel
     document = manuel.Document(source, location='fake.txt')
 
 
@@ -80,7 +89,7 @@ Parsing
 -------
 
 
-First we need an object to represent the tables.
+We need an object to represent the tables.
 
 .. code-block:: python
 
@@ -155,8 +164,8 @@ Now that we can find and extract the tables from the source, we need to be able
 to check them for correctness.
 
 The evaluate_table function will run each set of inputs through the given
-expression and compare the result with what was expected, recording any
-discrepancies.
+expression and compare the result with what was expected, recording each
+discrepancie as a :class:`TableError` stored in a :class:`TableErrors` object.
 
 .. code-block:: python
 
@@ -207,9 +216,9 @@ What would happen if there were?
     source_with_errors = """\
     The "or" operator
     =================
-    
+
     Here is an (erroneous) example of the "or" operator in action:
-    
+
     =====  =====  ======
     \      A or B
     --------------------
@@ -284,7 +293,7 @@ just have to put them together into a single "Manuel" object.
                 [format_table_errors])
 
 Now we can create a fresh document and tell it to do all the above steps
-(parse, evaluate, format) an instance of our table example Manuel.
+(parse, evaluate, format) using an instance of our plug-in.
 
     >>> m = Manuel()
     >>> document = manuel.Document(source_with_errors, location='fake.txt')
