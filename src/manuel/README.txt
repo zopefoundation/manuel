@@ -221,7 +221,6 @@ we'll look at parsing.
     ...     print (region.lineno, region.parsed or region.source)
     (1, 'This is my\ndoctest.\n\n')
     (4, <zope.testing.doctest.Example instance at 0x...>)
-    (6, '\n')
 
 Now we can evaluate the examples.
 
@@ -230,7 +229,6 @@ Now we can evaluate the examples.
     ...     print (region.lineno, region.evaluated or region.source)
     (1, 'This is my\ndoctest.\n\n')
     (4, <manuel.doctest.DocTestResult instance at 0x...>)
-    (6, '\n')
 
 And format the results.
 
@@ -249,7 +247,7 @@ simplify things.
     ...     42
     ... """)
     >>> document.process_with(m, globs={})
-    >>> print document.formatted()
+    >>> print document.formatted(),
     File "<memory>", line 4, in <memory>
     Failed example:
         1 + 1
@@ -276,7 +274,7 @@ changes made by earlier evaluaters are available to the current evaluator.
     ...     1
     ... """)
     >>> document.process_with(m, globs={})
-    >>> print document.formatted()
+    >>> print document.formatted(),
 
 Imported modules are added to the global namespace as well.
 
@@ -290,7 +288,7 @@ Imported modules are added to the global namespace as well.
     ...
     ... """)
     >>> document.process_with(m, globs={})
-    >>> print document.formatted()
+    >>> print document.formatted(),
 
 
 Combining Test Types
@@ -465,7 +463,7 @@ When we run the document through our Manuel instance, we see the additional
 information.
 
     >>> document.process_with(m, globs={})
-    >>> print document.formatted()
+    >>> print document.formatted(),
     File "<memory>", line 10, in <memory>
     Failed example:
         a + b
@@ -496,7 +494,7 @@ in the source (in a comment for example), it will be included in the output:
     ... """)
 
     >>> document.process_with(m, globs={})
-    >>> print document.formatted()
+    >>> print document.formatted(),
     File "<memory>", line 10, in <memory>
     Failed example:
         a + b # doesn't mention "c"
@@ -543,7 +541,7 @@ Now when we have a failure, only the genuinely referenced variables will be
 included in the debugging information.
 
     >>> document.process_with(m, globs={})
-    >>> print document.formatted()
+    >>> print document.formatted(),
     File "<memory>", line 10, in <memory>
     Failed example:
         a + b # doesn't mention "c"

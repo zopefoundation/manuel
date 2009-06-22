@@ -9,7 +9,7 @@ baseline = {}
 
 def find_ignores(document):
     for region in document.find_regions(IGNORE_START, IGNORE_END):
-        document.replace_region(region, None)
+        document.replace_region(region, object())
         document.remove_region(region)
 
 

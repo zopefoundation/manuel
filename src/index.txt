@@ -8,6 +8,7 @@ Manuel documentation
 
     intro.txt
     getting-started.txt
+    manuel/capture.txt
     manuel/codeblock.txt
     manuel/doctest.txt
     manuel/footnote.txt

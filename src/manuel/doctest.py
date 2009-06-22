@@ -28,9 +28,12 @@ def parse(document):
             if split_line_1 > region.lineno:
                 _, region = document.split_region(region, split_line_1)
 
-            if split_line_2 <= region_end:
+            if split_line_2 < region_end:
                 found, region = document.split_region(region, split_line_2)
-                document.replace_region(found, chunk)
+            else:
+                found = region
+
+            document.replace_region(found, chunk)
 
             assert region in document
 

@@ -1,8 +1,9 @@
-from zope.testing import doctest
 import manuel
 import os.path
 import unittest
 
+#doctest = manuel.absolute_import('doctest')
+from zope.testing import doctest
 
 __all__ = ['TestSuite']
 

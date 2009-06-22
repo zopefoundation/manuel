@@ -5,48 +5,53 @@ Footnotes
 =========
 
 The :mod:`manuel.footnote` module provides an implementation of reST footnote
-handling.
+handling, but instead of just plain text, the footnotes can contain any syntax
+Manuel can interpred including doctests.
 
     >>> import manuel.footnote
     >>> m = manuel.footnote.Manuel()
 
-We'll try the footnotes out by combining them with doctests.
+Here's an example of combining footnotes with doctests:
+
+.. so we also need the doctest Manuel plug-in
 
     >>> import manuel.doctest
     >>> m += manuel.doctest.Manuel()
+
+::
+
+    Here we reference a footnote. [1]_
+
+        >>> x
+        42
+
+    Here we reference another. [2]_
+
+        >>> x
+        100
+
+    .. [1] This is a test footnote definition.
+
+        >>> x = 42
+
+    .. [2] This is another test footnote definition.
+
+        >>> x = 100
+
+    .. [3] This is a footnote that will never be executed.
+
+        >>> raise RuntimeError('nooooo!')
+
+.. -> source
+
     >>> import manuel
-    >>> document = manuel.Document("""\
-    ... Here we reference a footnote. [1]_
-    ...
-    ...     >>> x
-    ...     42
-    ...
-    ... Here we reference another. [2]_
-    ...
-    ...     >>> x
-    ...     100
-    ...
-    ... .. [1] This is a test footnote definition.
-    ...
-    ...     >>> x = 42
-    ...
-    ... .. [2] This is another test footnote definition.
-    ...
-    ...     >>> x = 100
-    ...
-    ... .. [3] This is a footnote that should never be executed.
-    ...
-    ...     >>> raise RuntimeError('nooooo!')
-    ... """)
+    >>> document = manuel.Document(source)
     >>> document.process_with(m, globs={})
-
-Since all the examples in the doctest above are correct, we expect no errors.
-
     >>> print document.formatted(),
 
-The order of examples in footnotes is preserved.  If not, the document below
-will generate an error because "a" won't be defined when "b = a + 1" is
-evaluated.
+.. The order of examples in footnotes is preserved.  If not, the document below
+   would generate an error because "a" won't be defined when "b = a + 1" is
+   evaluated.
 
     >>> document = manuel.Document("""
     ... Here we want some imports to be done. [foo]_
@@ -61,35 +66,38 @@ evaluated.
     ...     >>> a = 1
     ...
     ...     >>> b = a + 1
-    ...     
+    ...
     ... """)
     >>> document.process_with(m, globs={})
     >>> print document.formatted()
 
 It is possible to reference more than one footnote on a single line.
 
-    >>> document = manuel.Document("""
-    ... Here we want some imports to be done. [1]_ [2]_ [3]_
-    ...
-    ...     >>> z
-    ...     105
-    ...
-    ... A little prose to separate the examples.
-    ...
-    ... .. [1] Do something
-    ...
-    ...     >>> w = 3
-    ...
-    ... .. [2] Do something
-    ...
-    ...     >>> x = 5
-    ...
-    ... .. [3] Do something
-    ...
-    ...     >>> y = 7
-    ...
-    ...     >>> z = w * x * y
-    ...     
-    ... """)
+::
+
+    This line has several footnotes on it. [1]_ [2]_ [3]_
+
+        >>> z
+        105
+
+    A little prose to separate the examples.
+
+    .. [1] Do something
+
+        >>> w = 3
+
+    .. [2] Do something
+
+        >>> x = 5
+
+    .. [3] Do something
+
+        >>> y = 7
+
+        >>> z = w * x * y
+
+.. -> source2
+
+    >>> document = manuel.Document(source)
     >>> document.process_with(m, globs={})
     >>> print document.formatted()

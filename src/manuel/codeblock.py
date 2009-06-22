@@ -19,7 +19,7 @@ def find_code_blocks(document):
         document.replace_region(region, CodeBlock(code))
 
 
-def execute_code_blocks(region, document, globs):
+def execute_code_block(region, document, globs):
     if not isinstance(region.parsed, CodeBlock):
         return
 
@@ -29,4 +29,4 @@ def execute_code_blocks(region, document, globs):
 
 class Manuel(manuel.Manuel):
     def __init__(self):
-        manuel.Manuel.__init__(self, [find_code_blocks], [execute_code_blocks])
+        manuel.Manuel.__init__(self, [find_code_blocks], [execute_code_block])

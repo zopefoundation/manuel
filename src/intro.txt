@@ -36,6 +36,9 @@ Included Functionality
 
 Manuel includes quite a bit of functionality out of the box:
 
+:ref:`manuel.capture <capture>`
+    stores regions of a document in variables for later processing
+
 :ref:`manuel.codeblock <code-blocks>`
     executes code in ".. code-block:: python" blocks
 

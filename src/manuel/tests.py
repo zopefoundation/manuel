@@ -1,5 +1,6 @@
 from zope.testing import renormalizing
 import manuel
+import manuel.capture
 import manuel.codeblock
 import manuel.doctest
 import manuel.ignore
@@ -28,20 +29,18 @@ def test_suite():
     checker = renormalizing.RENormalizing([
         (re.compile(r'<zope\.testing\.doctest\.'), '<doctest.'),
         ])
-    suite = unittest.TestSuite()
 
     tests = ['README.txt', 'footnote.txt', 'bugs.txt', 'codeblock.txt',
         'isolation.txt', 'table-example.txt', '../getting-started.txt',
-        'ignore.txt']
+        'ignore.txt', 'capture.txt']
 
     tests = map(get_abs_path, tests)
 
     m = manuel.ignore.Manuel()
     m += manuel.doctest.Manuel(optionflags=optionflags, checker=checker)
     m += manuel.codeblock.Manuel()
-    suite.addTest(manuel.testing.TestSuite(m, *tests))
-
-    return suite
+    m += manuel.capture.Manuel()
+    return manuel.testing.TestSuite(m, *tests)
 
 
 if __name__ == '__main__':

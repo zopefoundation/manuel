@@ -197,10 +197,15 @@ class Document(object):
         region2 = Region(region.lineno+lines_in_source1, source2)
         self.regions.insert(region_index, region2)
         self.regions.insert(region_index, region1)
+        if not region.source == source1 + source2:
+            raise RuntimeError('when splitting a region, combined results do '
+                'not equal the input')
         return region1, region2
 
     # XXX this method needs a better name
     def replace_region(self, to_be_replaced, parsed):
+        if parsed is None:
+            raise RuntimeError('None is not a valid value for "parsed"')
         new_regions = []
         old_regions = list(self.regions)
         while old_regions:
@@ -237,7 +242,7 @@ class Document(object):
                 'Only regions not already in the document may be inserted.')
         if new_region in self.shadow_regions:
             raise ValueError(
-                'Regions regurned by "find_regions" can not be directly '
+                'Regions returned by "find_regions" can not be directly '
                 'inserted into a document.  Use "replace_region" instead.')
 
         for index, region in enumerate(self.regions):
@@ -325,4 +330,3 @@ class Manuel(object):
         m.__extend(self)
         m.__extend(other)
         return m
-
