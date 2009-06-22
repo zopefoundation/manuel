@@ -4,7 +4,7 @@ Introduction
 Manuel lets you mix and match traditional doctests with custom test syntax.
 
 Several plug-ins are included that provide new test syntax (see
-:ref:`included-functionality`).  You can create your own plug-ins as well.
+:ref:`functionality`).  You can create your own plug-ins as well.
 
 For example, if you've ever wanted to include a large chunk of Python in a
 doctest but were irritated by all the ">>>" and "..." prompts required, you'd
@@ -23,35 +23,10 @@ Incidentally, the implementation of :mod:`manuel.codeblock` is only 22 lines of
 code.
 
 The plug-ins included in Manuel make good examples while being quite useful in
-their own right.  All the included plug-ins are listed in the next section.
+their own right.  The Manuel documentation makes extensive use of them as well.
+All the included plug-ins are listed in the :ref:`next section <functionality>`.
 
 For a large example of creating test syntax, take a look at the
 :ref:`fit-table-example` or for all the details, :ref:`theory-of-operation`.
 
 To see how to get Manuel wired up see the :ref:`getting-started` section.
-
-.. _included-functionality:
-
-Included Functionality
-======================
-
-Manuel includes quite a bit of functionality out of the box:
-
-:ref:`manuel.capture <capture>`
-    stores regions of a document in variables for later processing
-
-:ref:`manuel.codeblock <code-blocks>`
-    executes code in ".. code-block:: python" blocks
-
-:ref:`manuel.doctest <doctest>`
-    provides traditional doctest processing as a Manuel plug-in
-
-:ref:`manuel.footnote <footnotes>`
-    executes code in reST-style footnodes each time they're referenced (good
-    for getting incedental code out of the main flow of a document)
-
-:ref:`manuel.ignore <ignore>`
-    ignores parts of a document while running tests
-
-:ref:`manuel.isolation <isolation>`
-    makes it easier to have test isolation in doctests
