@@ -30,9 +30,7 @@ def test_suite():
         (re.compile(r'<zope\.testing\.doctest\.'), '<doctest.'),
         ])
 
-    tests = ['README.txt', 'footnote.txt', 'bugs.txt', 'codeblock.txt',
-        'isolation.txt', 'table-example.txt', '../getting-started.txt',
-        'ignore.txt', 'capture.txt']
+    tests = ['../index.txt', 'table-example.txt', 'README.txt', 'bugs.txt']
 
     tests = map(get_abs_path, tests)
 

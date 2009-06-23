@@ -321,7 +321,7 @@ where we placed the code, just like any other Manuel plug-in.
 .. this next bit is actually a reST comment, but it is run during tests anyway
     (note the single colon instead of double colon)
 
-.. invisible-code-block:: python
+.. invisible-code-block: python
 
     import unittest
     suite = manuel.testing.TestSuite(m, 'table-example.txt')

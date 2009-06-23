@@ -3,6 +3,8 @@
 Theory of Operation
 ===================
 
+.. XXX this really wants to be a "How To Write a Plug-in" tutorial.
+
 Manuel parses documents (tests), evaluates their contents, then formats the
 result of the evaluation.  The functionality is accessed via the :mod:`manuel`
 package.
