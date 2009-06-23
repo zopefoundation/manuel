@@ -163,9 +163,14 @@ Evaluating
 Now that we can find and extract the tables from the source, we need to be able
 to check them for correctness.
 
-The evaluate_table function will run each set of inputs through the given
-expression and compare the result with what was expected, recording each
-discrepancie as a :class:`TableError` stored in a :class:`TableErrors` object.
+The parse phase decomposed the :class:`Document` into several :class:`Region`
+instances.  During the evaluation phase each evaluater is called once for each
+region.
+
+The evaluate_table function iterates over each set of inputs given in a single
+table, evaluate the inputs with the expression and compare the result with what
+was expected.  Each discrepancy will be stored as a :class:`TableError` in a
+:class:`TableErrors` object.
 
 .. code-block:: python
 
@@ -209,11 +214,10 @@ Yay!  There were no errors:
     >>> region.evaluated
     []
 
-What would happen if there were?
+What would happen if there were errors?
 
-.. code-block:: python
+::
 
-    source_with_errors = """\
     The "or" operator
     =================
 
@@ -229,15 +233,16 @@ What would happen if there were?
     False  True   False
     True   True   True
     =====  =====  ======
-    """
 
-    document = manuel.Document(source_with_errors, location='fake.txt')
-    parse_tables(document)
-    region = list(document)[1]
+.. -> source_with_errors
 
-This time the evaluator records errors:
-
+    >>> document = manuel.Document(source_with_errors, location='fake.txt')
+    >>> parse_tables(document)
+    >>> region = list(document)[1]
     >>> evaluate_table(region, document, {})
+
+...the result of evaluaton would include them:
+
     >>> region.evaluated
     [<TableError object at ...>]
 
