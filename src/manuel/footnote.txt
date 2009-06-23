@@ -6,7 +6,7 @@ Footnotes
 
 The :mod:`manuel.footnote` module provides an implementation of reST footnote
 handling, but instead of just plain text, the footnotes can contain any syntax
-Manuel can interpred including doctests.
+Manuel can interpret including doctests.
 
     >>> import manuel.footnote
     >>> m = manuel.footnote.Manuel()
