@@ -1,6 +1,13 @@
 CHANGES
 =======
 
+1.0.0b1 (2009-06-24)
+--------------------
+
+- major docs improvements
+- added several new plug-ins
+
+
 1.0.0a8 (2009-05-01)
 --------------------
 
@@ -32,4 +39,4 @@ CHANGES
 1.0.0a2 (2008-10-17)
 --------------------
 
-- first public release
+- first release

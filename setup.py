@@ -2,7 +2,7 @@ from setuptools import setup, find_packages
 import os
 
 long_description = (
-    open(os.path.join('README.txt')).read()
+    open('README.txt').read()
     + '\n\n'
     + open('CHANGES.txt').read()
     )
@@ -17,8 +17,8 @@ setup(
     author='Benji York',
     author_email='benji@benjiyork.com',
     description=
-        'Manuel lets you combine traditional doctests with new test syntax '
-        'that you create yourself or is included in Manuel.',
+        'Manuel lets you mix and match traditional doctests with custom test '
+        'syntax.',
     license='ZPL',
     install_requires=[
         'setuptools',
