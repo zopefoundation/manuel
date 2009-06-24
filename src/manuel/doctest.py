@@ -33,7 +33,8 @@ def parse(document):
             else:
                 found = region
 
-            document.replace_region(found, chunk)
+            document.claim_region(found)
+            found.parsed = chunk
 
             assert region in document
 

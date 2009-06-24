@@ -51,7 +51,8 @@ def find_captures(document):
 
         name = region.start_match.group('name')
         block = textwrap.dedent(final_region.source)
-        document.replace_region(region, Capture(name, block))
+        document.claim_region(region)
+        region.parsed = Capture(name, block)
 
 
 def store_capture(region, document, globs):

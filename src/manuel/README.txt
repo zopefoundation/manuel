@@ -112,7 +112,8 @@ and create NumbersTest objects from the source text.
     ...         numbers = map(
     ...             int, region.start_match.group('numbers').split(','))
     ...         test = NumbersTest(description, numbers)
-    ...         document.replace_region(region, test)
+    ...         document.claim_region(region)
+    ...         region.parsed = test
 
     >>> parse(document)
     >>> [region.source for region in document]

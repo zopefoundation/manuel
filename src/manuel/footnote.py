@@ -24,7 +24,8 @@ def find_footnote_references(document):
     footnote_names = []
     for region in document.find_regions(FOOTNOTE_DEFINITION_RE):
         name = region.start_match.group(1)
-        document.replace_region(region, FootnoteDefinition(name))
+        document.claim_region(region)
+        region.parsed = FootnoteDefinition(name)
         footnote_names.append(name)
 
     # find the markers that show where footnotes have been referenced.
@@ -36,7 +37,8 @@ def find_footnote_references(document):
                 raise RuntimeError('Unknown footnote: %r' % name)
 
         assert names
-        document.replace_region(region, FootnoteReference(names))
+        document.claim_region(region)
+        region.parsed = FootnoteReference(names)
 
 
 @manuel.timing(manuel.LATE)

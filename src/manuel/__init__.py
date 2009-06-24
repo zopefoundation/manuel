@@ -86,7 +86,7 @@ def make_string_into_lines(s):
     return lines
 
 
-def break_up_region(original, new, parsed):
+def break_up_region(original, new):
     assert original.parsed is None
     lines = make_string_into_lines(original.source)
 
@@ -99,7 +99,6 @@ def break_up_region(original, new, parsed):
             Region(original.lineno, lines_to_string(before_lines)))
 
     # put in the parsed
-    new.parsed = parsed
     new_regions.append(new)
 
     # figure out if there are any lines after the given region
@@ -202,25 +201,21 @@ class Document(object):
                 'not equal the input')
         return region1, region2
 
-    # XXX this method needs a better name
-    def replace_region(self, to_be_replaced, parsed):
-        if parsed is None:
-            raise RuntimeError('None is not a valid value for "parsed"')
+    def claim_region(self, to_be_replaced):
         new_regions = []
         old_regions = list(self.regions)
         while old_regions:
             region = old_regions.pop(0)
             if region.lineno == to_be_replaced.lineno:
                 assert not region.parsed
-                new_regions.extend(break_up_region(
-                    region, to_be_replaced, parsed))
+                new_regions.extend(break_up_region(region, to_be_replaced))
                 break
             elif region.lineno > to_be_replaced.lineno: # we "overshot"
                 assert not new_regions[-1].parsed
                 to_be_broken = new_regions[-1]
                 del new_regions[-1]
                 new_regions.extend(break_up_region(
-                    to_be_broken, to_be_replaced, parsed))
+                    to_be_broken, to_be_replaced))
                 new_regions.append(region)
                 break
 
@@ -230,8 +225,7 @@ class Document(object):
             # the very last region, which also must not have been parsed yet
             assert not region.parsed
             del new_regions[-1]
-            new_regions.extend(break_up_region(
-                region, to_be_replaced, parsed))
+            new_regions.extend(break_up_region(region, to_be_replaced))
 
         new_regions.extend(old_regions)
         self.regions = new_regions
@@ -243,7 +237,7 @@ class Document(object):
         if new_region in self.shadow_regions:
             raise ValueError(
                 'Regions returned by "find_regions" can not be directly '
-                'inserted into a document.  Use "replace_region" instead.')
+                'inserted into a document.  Use "claim_region" instead.')
 
         for index, region in enumerate(self.regions):
             if region is marker_region:

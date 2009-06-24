@@ -13,7 +13,8 @@ class Reset(object):
 
 def find_reset(document):
     for region in document.find_regions(RESET):
-        document.replace_region(region, Reset())
+        document.claim_region(region)
+        region.parsed = Reset()
 
 
 def execute_reset(region, document, globs):
@@ -33,7 +34,8 @@ def find_baseline(document):
     baseline.clear()
 
     for region in document.find_regions(CAPTURE):
-        document.replace_region(region, Capture())
+        document.claim_region(region)
+        region.parsed = Capture()
 
 
 def execute_baseline(region, document, globs):

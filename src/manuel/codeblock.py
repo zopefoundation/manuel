@@ -16,7 +16,8 @@ def find_code_blocks(document):
         source = textwrap.dedent('\n'.join(region.source.splitlines()[1:]))
         source_location = '%s:%d' % (document.location, region.lineno)
         code = compile(source, source_location, 'exec', 0, True)
-        document.replace_region(region, CodeBlock(code))
+        document.claim_region(region)
+        region.parsed = CodeBlock(code)
 
 
 def execute_code_block(region, document, globs):
