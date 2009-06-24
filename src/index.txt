@@ -146,8 +146,8 @@ The suite can be either a :class:`manuel.testing.TestSuite` object or a
 Others
 ------
 
-If you figure out how to make Manuel work with other test runners (nose,
-py.test, etc.), please `send me an email`_ and I'll expand this section.
+If you know out how to make Manuel work with other test runners (nose, py.test,
+etc.), please `send me an email`_ and I'll expand this section.
 
 .. _send me an email: benji+manuel@benjiyork.com
 
