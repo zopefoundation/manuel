@@ -86,7 +86,6 @@ def TestSuite(m, *paths, **kws):
     suite = unittest.TestSuite()
 
     # walk up the stack frame to find the module that called this function
-    depth = 2
     for depth in range(2, 5):
         try:
             calling_module = doctest._normalize_module(None, depth=depth)
