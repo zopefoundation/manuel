@@ -9,7 +9,6 @@ __all__ = ['TestSuite']
 
 class TestCase(unittest.TestCase):
 
-    # XXX this is broken, see the unittest.TestCase docstring
     def __init__(self, m, document, setUp=None, tearDown=None, globs=None):
         unittest.TestCase.__init__(self)
         self.manuel = m
