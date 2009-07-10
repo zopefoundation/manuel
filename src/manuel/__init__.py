@@ -129,13 +129,64 @@ def find_end_of_line(s):
         end += 1
     return end
 
-class Document(object):
 
-    def __init__(self, source, location='<memory>'):
+class RegionContainer(object):
+
+    location = '<memory>'
+    id = None
+
+    def __init__(self):
+        self.regions = []
+
+    def parse_with(self, m):
+        for parser in sort_handlers(m.parsers):
+            parser(self)
+
+    def evaluate_with(self, m, globs):
+        globs = GlobWrapper(globs)
+        for region in list(self):
+            for evaluater in sort_handlers(m.evaluaters):
+                evaluater(region, self, globs)
+
+    def format_with(self, m):
+        for formatter in sort_handlers(m.formatters):
+            formatter(self)
+
+    def process_with(self, m, globs):
+        """Run all phases of document processing using a Manuel instance.
+        """
+        self.parse_with(m)
+        self.evaluate_with(m, globs)
+        self.format_with(m)
+
+    def formatted(self):
+        """Return a string of all non-boolean-false formatted regions.
+        """
+        return ''.join(region.formatted for region in self if region.formatted)
+
+    def append(self, region):
+        self.regions.append(region)
+
+    def __iter__(self):
+        """Iterate over all regions of the document.
+        """
+        return iter(self.regions)
+
+    def __nonzero__(self):
+        return bool(self.regions)
+
+
+class Document(RegionContainer):
+
+    def __init__(self, source, location=None):
+        RegionContainer.__init__(self)
+
+        if location is not None:
+            self.location = location
+
         self.source = newlineify(source)
-        self.location = location
 
-        self.regions = [Region(lineno=1, source=source)]
+        self.append(Region(lineno=1, source=source))
         self.shadow_regions = []
 
     def find_regions(self, start, end=None):
@@ -254,37 +305,6 @@ class Document(object):
 
     def insert_region_after(self, marker_region, new_region):
         self.insert_region('after', marker_region, new_region)
-
-    def parse_with(self, m):
-        for parser in sort_handlers(m.parsers):
-            parser(self)
-
-    def evaluate_with(self, m, globs):
-        globs = GlobWrapper(globs)
-        for region in list(self):
-            for evaluater in sort_handlers(m.evaluaters):
-                evaluater(region, self, globs)
-
-    def format_with(self, m):
-        for formatter in sort_handlers(m.formatters):
-            formatter(self)
-
-    def process_with(self, m, globs):
-        """Run all phases of document processing using a Manuel instance.
-        """
-        self.parse_with(m)
-        self.evaluate_with(m, globs)
-        self.format_with(m)
-
-    def formatted(self):
-        """Return a string of all non-boolean-false formatted regions.
-        """
-        return ''.join(region.formatted for region in self if region.formatted)
-
-    def __iter__(self):
-        """Iterate over all regions of the document.
-        """
-        return iter(self.regions)
 
 
 class Manuel(object):
