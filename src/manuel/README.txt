@@ -558,7 +558,7 @@ included in the debugging information.
 
 
 Defining Test Cases
-===================
+-------------------
 
 If you want parts of a document to be accessable individually as test cases (to
 be able to run just a particular part of a document, for example), a parser can
