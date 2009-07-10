@@ -4,6 +4,7 @@ import manuel.capture
 import manuel.codeblock
 import manuel.doctest
 import manuel.ignore
+import manuel.testcase
 import manuel.testing
 import os.path
 import re
@@ -31,8 +32,6 @@ def test_suite():
         ])
 
     tests = ['../index.txt', 'table-example.txt', 'README.txt', 'bugs.txt']
-
-    tests = map(get_abs_path, tests)
 
     m = manuel.ignore.Manuel()
     m += manuel.doctest.Manuel(optionflags=optionflags, checker=checker)

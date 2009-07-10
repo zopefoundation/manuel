@@ -555,3 +555,23 @@ included in the debugging information.
     Additional Information:
         a = 1
         b = 2
+
+
+Defining Test Cases
+===================
+
+If you want parts of a document to be accessable individually as test cases (to
+be able to run just a particular part of a document, for example), a parser can
+create a region that marks the beginning of a new test case.
+
+.. code-block:: python
+
+    new_test_case_regex = re.compile(r'^.. new-test-case: \w+', re.MULTILINE)
+
+    def parse(document):
+        for region in document.find_regions(new_test_case_regex):
+            document.claim_region(region)
+            id = region.start_match.group(1)
+            region.parsed = manuel.testing.TestCaseMarker(id)
+
+XXX finish this section

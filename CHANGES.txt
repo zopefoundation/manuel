@@ -1,6 +1,13 @@
 CHANGES
 =======
 
+1.0.0b2 (2009-07-10)
+--------------------
+
+- add the ability to identify and run subsets of documents (using the -t switch
+  of zope.testing's testrunner for example)
+
+
 1.0.0b1 (2009-06-24)
 --------------------
 

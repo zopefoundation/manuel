@@ -1,3 +1,4 @@
+import itertools
 import manuel
 import os.path
 import unittest
@@ -7,22 +8,21 @@ from zope.testing import doctest
 
 __all__ = ['TestSuite']
 
+class TestCaseMarker(object):
+
+    def __init__(self, id=''):
+        self.id = id
+
+
 class TestCase(unittest.TestCase):
 
-    def __init__(self, m, document, setUp=None, tearDown=None, globs=None):
+    def __init__(self, m, regions, globs, setUp=None, tearDown=None):
         unittest.TestCase.__init__(self)
         self.manuel = m
-        self.document = document
+        self.regions = regions
+        self.globs = globs
         self.setUp_func = setUp
         self.tearDown_func = tearDown
-        if globs is None:
-            self.globs = {}
-        else:
-            self.globs = globs
-
-        # we want to go ahead and do the parse phase so the countTestCases
-        # method can get a good idea of how many tests there are
-        document.parse_with(m)
 
     def setUp(self):
         if self.setUp_func is not None:
@@ -33,9 +33,9 @@ class TestCase(unittest.TestCase):
             self.tearDown_func(self)
 
     def runTest(self):
-        self.document.evaluate_with(self.manuel, self.globs)
-        self.document.format_with(self.manuel)
-        results = [r.formatted for r in self.document if r.formatted]
+        self.regions.evaluate_with(self.manuel, self.globs)
+        self.regions.format_with(self.manuel)
+        results = [r.formatted for r in self.regions if r.formatted]
         if results:
             DIVIDER = '-'*70 + '\n'
             raise doctest.DocTestFailureException(
@@ -44,19 +44,63 @@ class TestCase(unittest.TestCase):
     def debug(self):
         self.setUp()
         self.manuel.debug = True
-        self.document.evaluate_with(self.manuel, self.globs)
+        self.regions.evaluate_with(self.manuel, self.globs)
         self.tearDown()
 
     def countTestCases(self):
-        return len([r for r in self.document if r.parsed])
+        return len([r for r in self.regions if r.parsed])
 
     def id(self):
-        return self.document.location
+        return self.regions.id
 
     def shortDescription(self):
-        return "Manuel Test: " + self.document.location
+        if self.regions.id:
+            return self.regions.location + ':' + self.regions.id
+        else:
+            return self.regions.location
 
     __str__ = __repr__ = shortDescription
+
+
+def group_regions_by_test_case(document):
+    """Generate groups of regions according to which testcase they belong"""
+    document_iter = iter(document)
+    marker = None
+    while True:
+        accumulated_regions = manuel.RegionContainer()
+        while True:
+            region = None # being defensive
+            try:
+                region = next(document_iter)
+            except StopIteration:
+                if not accumulated_regions:
+                    break
+            else:
+                accumulated_regions.append(region)
+
+                if not isinstance(region.parsed, TestCaseMarker):
+                    continue
+
+            # we just found a test case marker or hit the end of the
+            # document
+
+            # figure out what this test case's ID is
+            accumulated_regions.location = document.location
+            if marker is not None and marker.parsed.id:
+                accumulated_regions.id = marker.parsed.id
+
+            yield accumulated_regions
+            marker = region
+            break
+
+        # if there are no more regions, stop
+        try:
+            region = next(document_iter)
+        except StopIteration:
+            break
+
+        # put the region we peeked at back so the inner loop can consume it
+        document_iter = itertools.chain([region], document_iter)
 
 
 def TestSuite(m, *paths, **kws):
@@ -83,6 +127,7 @@ def TestSuite(m, *paths, **kws):
     """
 
     suite = unittest.TestSuite()
+    globs = kws.pop('globs', {})
 
     # walk up the stack frame to find the module that called this function
     for depth in range(2, 5):
@@ -95,10 +140,15 @@ def TestSuite(m, *paths, **kws):
 
     for path in paths:
         if os.path.isabs(path):
-            abs_path = path
+            abs_path = os.path.normpath(path)
         else:
-            abs_path = doctest._module_relative_path(calling_module, path)
+            abs_path = os.path.abspath(
+                doctest._module_relative_path(calling_module, path))
+
         document = manuel.Document(open(abs_path).read(), location=abs_path)
-        suite.addTest(TestCase(m, document, **kws))
+        document.parse_with(m)
+
+        for regions in group_regions_by_test_case(document):
+            suite.addTest(TestCase(m, regions, globs, **kws))
 
     return suite
