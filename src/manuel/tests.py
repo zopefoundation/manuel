@@ -31,7 +31,8 @@ def test_suite():
         (re.compile(r'<zope\.testing\.doctest\.'), '<doctest.'),
         ])
 
-    tests = ['../index.txt', 'table-example.txt', 'README.txt', 'bugs.txt']
+    tests = ['../index.txt', 'table-example.txt', 'README.txt', 'bugs.txt',
+        'capture.txt']
 
     m = manuel.ignore.Manuel()
     m += manuel.doctest.Manuel(optionflags=optionflags, checker=checker)

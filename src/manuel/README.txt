@@ -179,15 +179,15 @@ formatting function returns None when it has no output, or a string otherwise.
             result = region.evaluated
             if not result.passed:
                 region.formatted = (
-                    "the numbers aren't in sorted order: "
-                    + ', '.join(map(str, result.test.numbers)))
+                    "the numbers aren't in sorted order: %s\n"
+                    % ', '.join(map(str, result.test.numbers)))
 
 Since one of the test cases failed we get an appropriate message out of the
 formatter.
 
     >>> format(document)
     >>> [region.formatted for region in document]
-    [None, None, None, "the numbers aren't in sorted order: 3, 5, 1"]
+    [None, None, None, "the numbers aren't in sorted order: 3, 5, 1\n"]
 
 
 Manuel Objects
@@ -301,14 +301,15 @@ Now that we have both doctests and the silly "sorted numbers" tests, let's
 create a single document that has both.
 
     >>> document = manuel.Document("""
-    ... We can test Python...
+    ... We can have a list of numbers...
+    ...
+    ...     a very nice list: 3, 6, 2
+    ...
+    ... ... and we can test Python.
     ...
     ...     >>> 1 + 1
     ...     42
     ...
-    ... ...and lists of numbers.
-    ...
-    ...     a very nice list: 3, 6, 2
     ... """)
 
 Obviously both of those tests will fail, but first we have to configure Manuel
@@ -332,10 +333,11 @@ number tests.
 
     >>> for region in document:
     ...     print (region.lineno, region.parsed or region.source)
-    (1, '\nWe can test Python...\n\n')
-    (4, <doctest.Example instance at 0x...>)
-    (6, '\n...and lists of numbers.\n\n')
-    (9, <NumbersTest object at 0x...>)
+    (1, '\nWe can have a list of numbers...\n\n')
+    (4, <NumbersTest object at 0x...>)
+    (5, '\n... and we can test Python.\n\n')
+    (8, <doctest.Example instance at 0x...>)
+    (10, '\n')
 
 We can look at the formatted output to see that each of the two tests failed.
 
@@ -344,15 +346,15 @@ We can look at the formatted output to see that each of the two tests failed.
     ...         print '-'*70
     ...         print region.formatted,
     ----------------------------------------------------------------------
-    File "<memory>", line 4, in <memory>
+    the numbers aren't in sorted order: 3, 6, 2
+    ----------------------------------------------------------------------
+    File "<memory>", line 8, in <memory>
     Failed example:
         1 + 1
     Expected:
         42
     Got:
         2
-    ----------------------------------------------------------------------
-    the numbers aren't in sorted order:  3, 6, 2
 
 
 Priorities

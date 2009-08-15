@@ -3,7 +3,9 @@ import re
 import string
 import textwrap
 
-CAPTURE_DIRECTIVE = re.compile(r'^\.\.\s*->\s*(?P<name>\S+).*$', re.MULTILINE)
+CAPTURE_DIRECTIVE = re.compile(
+    r'^(?P<indent>(\t| )*)\.\.\s*->\s*(?P<name>\S+).*$',
+    re.MULTILINE)
 
 
 class Capture(object):
@@ -11,15 +13,42 @@ class Capture(object):
         self.name = name
         self.block = block
 
+def normalize_whitespace(s):
+    return s.replace('\t', ' '*8) # turn tabs into spaces
+
 
 @manuel.timing(manuel.EARLY)
 def find_captures(document):
-    for region in document.find_regions(CAPTURE_DIRECTIVE):
+    while True:
+        regions = document.find_regions(CAPTURE_DIRECTIVE)
+        if not regions:
+            break
+        region = regions[-1]
         # note that start and end have different bases, "start" is the offset
         # from the begining of the region, "end" is a document line number
-        end = region.lineno-2
+        end = region.lineno - 2
 
-        # not that we've extracted the information we need, lets slice up the
+        indent = region.start_match.group('indent')
+        indent = normalize_whitespace(indent)
+
+        def indent_matches(line):
+            """Is the indentation of a line match what we're looking for?"""
+            line = normalize_whitespace(line)
+
+            if not line.strip():
+                # the line consists entirely of whitespace (or nothing at all),
+                # so is not considered to be of the appropriate indentation
+                return False
+
+            if line.startswith(indent):
+                if line[len(indent)] not in string.whitespace:
+                    return True
+
+            # if none of the above found the indentation to be a match, it is
+            # not a match
+            return False
+
+        # now that we've extracted the information we need, lets slice up the
         # document's regions to match
 
         for candidate in document:
@@ -32,13 +61,13 @@ def find_captures(document):
             raise RuntimeError('both start and end lines must be in the '
                 'same region')
 
+        start = None
         for offset, line in reversed(list(enumerate(lines))):
             if offset > end - found_region.lineno:
                 continue
-            if line and line[0] in string.whitespace:
-                start = offset
-            if line and line[0] not in string.whitespace:
+            if indent_matches(line):
                 break
+            start = offset + 1
         else:
             raise RuntimeError("couldn't find the start of the block")
 
