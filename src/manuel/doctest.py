@@ -34,6 +34,10 @@ def parse(document):
                 found = region
 
             document.claim_region(found)
+
+            # Since we're treating each example as a stand-alone thing, we need
+            # to reset its line number to zero.
+            chunk.lineno = 0
             found.parsed = chunk
 
             assert region in document
@@ -52,7 +56,7 @@ def evaluate(m, region, document, globs):
     runner.DIVIDER = '' # disable unwanted result formatting
     runner.run(
         doctest.DocTest([region.parsed], globs, test_name,
-            document.location, 0, None),
+            document.location, region.lineno-1, None),
         out=result.write, clear_globs=False)
     region.evaluated = result
 
