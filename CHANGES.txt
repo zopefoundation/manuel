@@ -1,6 +1,12 @@
 CHANGES
 =======
 
+1.0.1 (2009-08-26)
+------------------
+
+- fix line number reporting for test failures
+
+
 1.0.0 (2009-08-09)
 ------------------
 
