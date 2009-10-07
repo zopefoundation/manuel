@@ -55,7 +55,7 @@ Manuel includes several plug-ins out of the box:
 
 :ref:`manuel.footnote <footnotes>`
     executes code in reST-style footnodes each time they're referenced (good
-    for getting incedental code out of the main flow of a document)
+    for getting incidental code out of the main flow of a document)
 
 :ref:`manuel.ignore <ignore>`
     ignores parts of a document while running tests
@@ -217,7 +217,7 @@ checkers <http://docs.python.org/library/doctest.html#outputchecker-objects>`_
 Capturing Blocks
 ================
 
-When writing documentation the need often arrises to describe the contents of
+When writing documentation the need often arises to describe the contents of
 files or other non-Python information.  You may also want to put that
 information under test.  :mod:`manuel.capture` helps with that.
 
@@ -250,7 +250,7 @@ To do that you might write your document like this:
 
     .. -> input
 
-    Your program should generare this output file::
+    Your program should generate this output file::
 
         1
         2
@@ -279,7 +279,7 @@ To do that you might write your document like this:
     >>> print document.formatted(),
 
 This uses the syntax implemented in :mod:`manuel.collect` to capture a block of
-text into a varible (the one named after "->").
+text into a variable (the one named after "->").
 
 Whenever a line of the structure ".. -> VAR" is detected, the text of the
 *previous* block will be stored in the given variable.
@@ -309,7 +309,7 @@ intended document contents will remain.  Like so::
         65
         2
 
-    Your program should generare this output file::
+    Your program should generate this output file::
 
         1
         2
@@ -573,7 +573,7 @@ Ignoring Blocks
 
 .. reset-globs
 
-Occasionally the need arrises to ignore a block of markup that would otherwise
+Occasionally the need arises to ignore a block of markup that would otherwise
 be parsed by a Manuel plug-in.
 
 For example, this document has a code-block that will generate a syntax error::
@@ -689,7 +689,7 @@ One of the advantages of unittest over doctest is that the individual tests are
 isolated from one-another.
 
 In large doctests (like this one) you may want to keep later tests from
-depending on incedental details of earlier tests, preventing the tests from
+depending on incidental details of earlier tests, preventing the tests from
 becoming brittle and harder to change.
 
 Test isolation is one approach to reducing this intra-doctest coupling.  The

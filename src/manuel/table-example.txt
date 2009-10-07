@@ -139,7 +139,7 @@ pertinent details, and instantiate Table objects.
             document.claim_region(region)
             region.parsed = table
 
-If we parse the Docuement we can see that the table was recognized.
+If we parse the Document we can see that the table was recognized.
 
     >>> parse_tables(document)
     >>> region = list(document)[1]
