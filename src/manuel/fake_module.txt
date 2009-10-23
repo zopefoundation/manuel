@@ -1,0 +1,113 @@
+manuel.fake_modules
+===================
+
+This document discusses the fake_module plugin for manuel that allows 
+doctests to define and then use modules. 
+
+   >>> import manuel
+   >>> import manuel.fake_module
+
+   >>> source = """\
+   ... This is a module doc-test:
+   ...
+   ... .. module-block:: fake_module
+   ...      import whatever
+   ...      class Something:
+   ...         pass
+   ...
+   ... As you can see, it does much!!
+   ... """
+   
+   >>> doc = manuel.Document(source)
+   >>> manuel.fake_module.find_fakes(doc)
+
+Let's extract the module name and its source:
+
+   >>> for region in doc:
+   ...    if region.parsed:
+   ...       print region.parsed.module_name
+   ...       print region.source
+   fake_module
+   .. module-block:: fake_module
+        import whatever
+        class Something:
+           pass
+   <BLANKLINE>
+   <BLANKLINE>
+
+The code can correctly parse multiple modules:
+
+   >>> source = """\
+   ... Our system has a few modules:
+   ...
+   ... .. module-block:: some_module
+   ...      class Foo:
+   ...         pass
+   ...
+   ... and:
+   ... 
+   ... .. module-block:: an_other_module
+   ...      class Bar:
+   ...          pass
+   ...
+   ... fin
+   ... """
+
+   >>> doc = manuel.Document(source)
+   >>> manuel.fake_module.find_fakes(doc)
+   
+Again, we extract the various parsed regions:
+
+   >>> for region in doc:
+   ...     if region.parsed:
+   ...         print region.parsed.module_name
+   ...         print region.source
+   some_module
+   .. module-block:: some_module
+        class Foo:
+           pass
+   <BLANKLINE>
+   <BLANKLINE>
+   an_other_module
+   .. module-block:: an_other_module
+        class Bar:
+            pass
+   <BLANKLINE>
+   <BLANKLINE>
+
+Let's execute these regions into a globs dictionary of our own:
+
+  >>> glob = {}
+  >>> for region in doc:
+  ...     if region.parsed:
+  ...         manuel.fake_module.execute_into_module(
+  ...                            region, doc, glob)
+
+Let's check that our glob contains the modules with their names:
+
+  >>> for module in glob.values(): 
+  ...     print module.__name__, ":", type(module)
+  manueltest.fake.some_module : <type 'module'>
+  manueltest.fake.an_other_module : <type 'module'>
+
+Let's also confirm that the modules contain their respective class
+definitions:
+
+  >>> for module in glob.values():
+  ...     print dir(module)
+  ['Foo', '__builtins__', '__doc__', '__file__', '__name__']
+  ['Bar', '__builtins__', '__doc__', '__file__', '__name__']
+
+We would also want to ensure that we can import the module correctly 
+too. The fake_module system also adds the modules under their own 
+namespace 'manueltest.fake', as you can see from the previous tests:
+
+  >>> import manueltest.fake.some_module
+  >>> import manueltest.fake.an_other_module
+  >>> manueltest.fake.some_module.Foo
+  <class manueltest.fake.some_module.Foo at ...>
+  >>> manueltest.fake.an_other_module.Bar
+  <class manueltest.fake.an_other_module.Bar at ...>
+
+Note: There is no checking done to ensure that the module definition
+hasn't overridden any previous modules defined in the doctest.
