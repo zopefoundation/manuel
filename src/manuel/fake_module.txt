@@ -111,3 +111,42 @@ namespace 'manueltest.fake', as you can see from the previous tests:
 
 Note: There is no checking done to ensure that the module definition
 hasn't overridden any previous modules defined in the doctest.
+
+Now that we can see objects in our modules, we need to ensure that
+they are fully 'module-aware'. In otherwords, are they aware that
+they are existing in a module? Let's create a new module with
+classes and functions to test this:
+
+  >>> source = """\
+  ... 
+  ... .. module-block:: cls_n_func
+  ...      class Baz:
+  ...         def __init__(self):
+  ...            pass
+  ...
+  ...      def faz_func(): pass
+  ...
+  ... """
+
+We will now go through the usual steps to create the module in our
+own glob:
+
+  >>> doc = manuel.Document(source)
+  >>> manuel.fake_module.find_fakes(doc)
+  >>> glob = {}
+  >>> for region in doc:
+  ...    if region.parsed:
+  ...        manuel.fake_module.execute_into_module(
+  ...                            region, doc, glob)
+
+The class must be aware that it exists within the `manuelfake.test.
+cls_n_func` module:
+
+  >>> print glob['cls_n_func'].Baz.__module__
+  manueltest.fake.cls_n_func
+
+in addition, functions must also be aware of their module:
+
+  >>> print glob['cls_n_func'].faz_func.__module__
+  manueltest.fake.cls_n_func
+
