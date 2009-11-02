@@ -1,23 +1,34 @@
 manuel.fake_modules
 ===================
 
-This document discusses the fake_module plugin for manuel that allows 
-doctests to define and then use modules. 
+This document discusses the `fake_module` plugin for Manuel that allows 
+doctests to define and then use Python modules. 
+
+The `fake_module` plugin defines a `module-block` directive that takes
+a single Python identifier as an argument. One or more lines of Python
+code indented will then form the body of the module, which is later 
+referenced by its identifier.
 
    >>> import manuel
    >>> import manuel.fake_module
 
+The following string shows what this might look like:
+
    >>> source = """\
    ... This is a module doc-test:
    ...
-   ... .. module-block:: fake_module
-   ...      import whatever
+   ... .. module-block:: test_module
+   ...      import pprint
+   ...      
    ...      class Something:
    ...         pass
+   ...      
+   ...      def my_function(): pass
+   ...      
+   ...      a = 1 + 2
    ...
    ... As you can see, it does much!!
    ... """
-   
    >>> doc = manuel.Document(source)
    >>> manuel.fake_module.find_fakes(doc)
 
@@ -27,11 +38,16 @@ Let's extract the module name and its source:
    ...    if region.parsed:
    ...       print region.parsed.module_name
    ...       print region.source
-   fake_module
-   .. module-block:: fake_module
-        import whatever
+   test_module
+   .. module-block:: test_module
+        import pprint
+   <BLANKLINE>
         class Something:
            pass
+   <BLANKLINE>
+        def my_function(): pass
+   <BLANKLINE>
+        a = 1 + 2
    <BLANKLINE>
    <BLANKLINE>
 
@@ -75,7 +91,8 @@ Again, we extract the various parsed regions:
    <BLANKLINE>
    <BLANKLINE>
 
-Let's execute these regions into a globs dictionary of our own:
+We can use `execute_into_module` to execute these regions into a 
+glob dictionary of our own:
 
   >>> glob = {}
   >>> for region in doc:
@@ -90,7 +107,7 @@ Let's check that our glob contains the modules with their names:
   manueltest.fake.some_module : <type 'module'>
   manueltest.fake.an_other_module : <type 'module'>
 
-Let's also confirm that the modules contain their respective class
+and also confirm that the modules contain their respective class
 definitions:
 
   >>> for module in glob.values():
@@ -100,7 +117,7 @@ definitions:
 
 We would also want to ensure that we can import the module correctly 
 too. The fake_module system also adds the modules under their own 
-namespace 'manueltest.fake', as you can see from the previous tests:
+namespace `manueltest.fake`, as you can see from the previous tests:
 
   >>> import manueltest.fake.some_module
   >>> import manueltest.fake.an_other_module
@@ -110,10 +127,10 @@ namespace 'manueltest.fake', as you can see from the previous tests:
   <class manueltest.fake.an_other_module.Bar at ...>
 
 Note: There is no checking done to ensure that the module definition
-hasn't overridden any previous modules defined in the doctest.
+hasn't overridden any previous modules defined in the doctest. 
 
 Now that we can see objects in our modules, we need to ensure that
-they are fully 'module-aware'. In otherwords, are they aware that
+they are fully 'module-aware'. In other words, are they aware that
 they are existing in a module? Let's create a new module with
 classes and functions to test this:
 
@@ -145,7 +162,7 @@ cls_n_func` module:
   >>> print glob['cls_n_func'].Baz.__module__
   manueltest.fake.cls_n_func
 
-in addition, functions must also be aware of their module:
+In addition, functions must also be aware of their module:
 
   >>> print glob['cls_n_func'].faz_func.__module__
   manueltest.fake.cls_n_func
