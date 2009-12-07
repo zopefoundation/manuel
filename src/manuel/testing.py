@@ -2,9 +2,7 @@ import itertools
 import manuel
 import os.path
 import unittest
-
-#doctest = manuel.absolute_import('doctest')
-from zope.testing import doctest
+import zope.testing.doctest
 
 __all__ = ['TestSuite']
 
@@ -38,7 +36,7 @@ class TestCase(unittest.TestCase):
         results = [r.formatted for r in self.regions if r.formatted]
         if results:
             DIVIDER = '-'*70 + '\n'
-            raise doctest.DocTestFailureException(
+            raise zope.testing.doctest.DocTestFailureException(
                 '\n' + DIVIDER + DIVIDER.join(results))
 
     def debug(self):
@@ -132,7 +130,8 @@ def TestSuite(m, *paths, **kws):
     # walk up the stack frame to find the module that called this function
     for depth in range(2, 5):
         try:
-            calling_module = doctest._normalize_module(None, depth=depth)
+            calling_module = zope.testing.doctest._normalize_module(
+                None, depth=depth)
         except KeyError:
             continue
         else:
@@ -143,7 +142,8 @@ def TestSuite(m, *paths, **kws):
             abs_path = os.path.normpath(path)
         else:
             abs_path = os.path.abspath(
-                doctest._module_relative_path(calling_module, path))
+                zope.testing.doctest._module_relative_path(
+                    calling_module, path))
 
         document = manuel.Document(open(abs_path).read(), location=abs_path)
         document.parse_with(m)
