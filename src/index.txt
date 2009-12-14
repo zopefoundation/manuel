@@ -278,7 +278,7 @@ To do that you might write your document like this:
     >>> document.process_with(m, globs={})
     >>> print document.formatted(),
 
-This uses the syntax implemented in :mod:`manuel.collect` to capture a block of
+This uses the syntax implemented in :mod:`manuel.capture` to capture a block of
 text into a variable (the one named after "->").
 
 Whenever a line of the structure ".. -> VAR" is detected, the text of the
