@@ -24,15 +24,62 @@ def get_abs_path(p):
     here = os.path.dirname(fake.func_code.co_filename)
     return os.path.join(os.getcwd(), here, p)
 
+_NO_ROLES = """\
+Stuff
 
+.. code-block:: python
+
+   def foo(abc):
+       return 1
+
+More stuff
+"""
+
+_WITH_ROLES = """\
+Stuff
+
+.. code-block:: python
+
+   def foo(abc):
+       return 1
+
+More stuff.
+"""
+
+class Test_find_code_blocks(unittest.TestCase):
+    def _callFUT(self, document):
+        from manuel.codeblock import find_code_blocks
+        return find_code_blocks(document)
+
+    def test_start_end_no_roles(self):
+        region = Region(_NO_ROLES)
+        document = DummyDocument([region])
+        self._callFUT(document)
+
+class Region(object):
+    lineno = 1
+    def __init__(self, source):
+        self.source = source
+
+class DummyDocument(object):
+    def __init__(self, regions):
+        self._regions = regions
+        self.claimed = []
+
+    def find_regions(self, start, end):
+        return self._regions
+
+    def claim_region(self, region):
+        self.claimed.append(region)
+    
 def test_suite():
     optionflags = doctest.NORMALIZE_WHITESPACE | doctest.ELLIPSIS
     checker = renormalizing.RENormalizing([
         (re.compile(r'<zope\.testing\.doctest\.'), '<doctest.'),
         ])
 
-    tests = ['../index.txt', 'table-example.txt', 'README.txt', 'bugs.txt',
-        'capture.txt']
+    tests = ['../../index.txt', '../table-example.txt', '../README.txt',
+             '../bugs.txt', '../capture.txt']
 
     m = manuel.ignore.Manuel()
     m += manuel.doctest.Manuel(optionflags=optionflags, checker=checker)
