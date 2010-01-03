@@ -36,17 +36,19 @@ output test blocks.
     ... Code blocks for testing start with ``.. testcode ::``::
     ... 
     ... .. testsetup::
+    ...
     ...     lyrics = "Da doo ron ron"
     ... 
     ... .. testcode::
+    ...
     ...     print lyrics
     ...
     ... .. testoutput::
+    ...
     ...     Da doo ron ron
     ...
     ... """
 
-    >>> import manuel
     >>> document = manuel.Document(source)
     >>> manuel.sphinx.parse(document)
     >>> for region in document:
@@ -61,6 +63,35 @@ output with the output in the TestCase blocks. The TestSetup and TestOutput
 blocks are only used as intermediates during parsing,  and ignored during
 evaluation.
 
+    >>> for region in document:
+    ...     manuel.sphinx.evaluate(region, document, {})
+
+
+Sphinx also allows for options to the code block in the form of ``:something:``
+flags under the ``.. testxxxx::`` statement. The ``:options:`` contains 
+doctest flags, and should be handled. All others should be ignored.
+
+    >>> source = """\
+    ... Code blocks for testing start with ``.. testcode ::``::
+    ... 
+    ... .. testsetup::
+    ...
+    ...     lyrics = "Da doo ron ron"
+    ... 
+    ... .. testcode::
+    ...    :hide:
+    ...
+    ...     print lyrics
+    ...
+    ... .. testoutput::
+    ...    :options: +NORMALIZE_WHITESPACE
+    ...    :hide:
+    ...
+    ...     Da  doo  ron  ron
+    ...
+    ... """
+    >>> document = manuel.Document(source)
+    >>> manuel.sphinx.parse(document)
     >>> for region in document:
     ...     manuel.sphinx.evaluate(region, document, {})
 

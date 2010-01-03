@@ -5,37 +5,46 @@ import textwrap
 doctest = __import__('doctest')
 import manuel.doctest
 
-BLOCK_START = re.compile(r'^\.\. test(setup|code|output):: *(testgroup)?', re.MULTILINE)
+BLOCK_START = re.compile(r'^\.\. test(setup|code|output)::(.*?)\n\n',
+                         re.MULTILINE|re.DOTALL)
 BLOCK_END = re.compile(r'(\n\Z|\n(?=\S))')
 
 # TODO: We need to handle groups, which we don't, and we need to handle that
-# for doctests as well, which we don't, and we probably need to handle
-# doctest options as well. And we might want to make sure that we are compatible
-# with how sphinx handles different cases, like groups and the '*' group and
-# setup and globals, etc.
+# for doctests as well, which we don't. And we might want to make sure that we
+# are compatible with how sphinx handles different cases, like groups and the
+# '*' group and setup and globals, etc.
 
-class TestSetup(object):
-    def __init__(self, code, group):
+class TestBase(object):
+    def __init__(self, code, group, options):
         self.code = code
         self.group = group
+        self.options = options
 
-class TestCode(object):
-    def __init__(self, code, group):
-        self.code = code
-        self.group = group
+class TestSetup(TestBase):
+    pass
 
-class TestOutput(object):
-    def __init__(self, code, group):
-        self.code = code
-        self.group = group
+class TestCode(TestBase):
+    pass
+
+class TestOutput(TestBase):
+    pass
 
 class TestCase(object):
     def __init__(self, setup, code, output):
         if setup:
-            self.code = setup.code + '\n' + code.code
+            self.code = setup.code
+            if setup.code[-1] != '\n':
+                self.code += '\n' 
+            self.code += code.code
         else:
             self.code = code.code
-        self.output = output.code
+        if output:
+            self.output = output.code
+            self.options = output.options
+        else:
+            self.output = ''
+            self.options = code.options
+            
         # When we start handling groups, we want to get the group of the
         # test here, so we can put that in the test report, I think:
         self.group = ''
@@ -44,15 +53,25 @@ def parse(document):
     groups = {}
     previous_type = ''
     for region in document.find_regions(BLOCK_START, BLOCK_END):
-        source = textwrap.dedent('\n'.join(region.source.splitlines()[1:]))
+        source = document.source[region.start_match.end():region.end_match.start()]
+        source = textwrap.dedent(source).strip()
         document.claim_region(region)
-        type_, group = region.start_match.groups()
+        type_, extras = region.start_match.groups()
+        if extras:
+            group = extras.splitlines()[0].strip()
+            for option in extras.splitlines()[1:]:
+                if ':options:' in option:
+                    options = option.split(':options:')[1].strip()
+                    break
+        else:
+            group = ''
+            options = None
         if type_ == 'setup':
-            region.parsed = TestSetup(source, region.start_match.groups()[1])
+            region.parsed = TestSetup(source, group, options)
         elif type_ == 'code':
-            region.parsed = TestCode(source, region.start_match.groups()[1])
+            region.parsed = TestCode(source, group, options)
         elif type_ == 'output':
-            region.parsed = TestOutput(source, region.start_match.groups()[1])
+            region.parsed = TestOutput(source, group, options)
     
     # Now go through the document and make all groups of regions into testcases.
     #iterator = iter(document)
@@ -84,9 +103,14 @@ def parse(document):
 
 def monkey_compile(code, name, type, flags, dont_inherit):
     return compile(code, name, 'exec', flags, dont_inherit)
-doctest.compile = monkey_compile
 
 def evaluate(region, document, globs):
+    try:
+        old_compile = doctest.compile
+    except AttributeError:
+        old_compile = compile
+    doctest.compile = monkey_compile
+
     if not isinstance(region.parsed, TestCase):
         return
 
@@ -103,14 +127,21 @@ def evaluate(region, document, globs):
         if match:
             exc_msg = match.group('msg')
             
+    options = region.parsed.options
+    if options:
+        import pdb;pdb.set_trace()
+        options = dict([(eval('doctest.' + x.strip()[1:]), True) for x in options.split(',')])
+        
+        
     example = doctest.Example(region.parsed.code, output, exc_msg=exc_msg,
-                              lineno=region.lineno)
+                              lineno=region.lineno, options=options)
     test = doctest.DocTest([example], globs, test_name, document.location,
                            region.lineno-1, None)
     runner = doctest.DocTestRunner()
     runner.DIVIDER = '' # disable unwanted result formatting
     runner.run(test, clear_globs=False)
     region.evaluated = result
+    doctest.compile = old_compile
     
 
 class Manuel(manuel.Manuel):
