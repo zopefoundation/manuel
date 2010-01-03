@@ -1,0 +1,66 @@
+Sphinx Testing
+==============
+ 
+Sphinx [http://sphinx.pocoo.org/] is a popular system to render Restructure
+text documents into various forms, including HTML and PDF. It has it's own
+syntax to run tests, more advanced that the Manuel syntax. It includes
+setup blocks, and expected output blocks. The code will be assumed to be
+Python.
+
+Code blocks for testing start with ``.. testcode ::``::
+
+    >>> source = """\
+    ... Code blocks for testing start with ``.. testcode ::``::
+    ... 
+    ... .. testcode::
+    ...
+    ...     print "Heybaberiba"
+    ...
+    ... """
+    
+Now we can parse this document with manuel and the sphinx extension::
+
+    >>> import manuel
+    >>> import manuel.sphinx
+    >>> document = manuel.Document(source)
+    >>> manuel.sphinx.parse(document)
+    >>> for region in document:
+    ...     print region.parsed
+    None
+    <manuel.sphinx.TestCode object at ...>
+
+The benefit over Sphinx "code-block" is that you can have setup blocks and
+output test blocks.
+
+    >>> source = """\
+    ... Code blocks for testing start with ``.. testcode ::``::
+    ... 
+    ... .. testsetup::
+    ...     lyrics = "Da doo ron ron"
+    ... 
+    ... .. testcode::
+    ...     print lyrics
+    ...
+    ... .. testoutput::
+    ...     Da doo ron ron
+    ...
+    ... """
+
+    >>> import manuel
+    >>> document = manuel.Document(source)
+    >>> manuel.sphinx.parse(document)
+    >>> for region in document:
+    ...     print region.parsed
+    None
+    <manuel.sphinx.TestSetup object at ...>
+    <manuel.sphinx.TestCase object at ...>
+    <manuel.sphinx.TestOutput object at ...>
+
+The evaluate method will run the code in the TesCase blocks, and compare the
+output with the output in the TestCase blocks. The TestSetup and TestOutput
+blocks are only used as intermediates during parsing,  and ignored during
+evaluation.
+
+    >>> for region in document:
+    ...     manuel.sphinx.evaluate(region, document, {})
+
