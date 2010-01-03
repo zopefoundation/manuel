@@ -57,15 +57,14 @@ def parse(document):
         source = textwrap.dedent(source).strip()
         document.claim_region(region)
         type_, extras = region.start_match.groups()
+        group = ''
+        options = None
         if extras:
             group = extras.splitlines()[0].strip()
             for option in extras.splitlines()[1:]:
                 if ':options:' in option:
                     options = option.split(':options:')[1].strip()
                     break
-        else:
-            group = ''
-            options = None
         if type_ == 'setup':
             region.parsed = TestSetup(source, group, options)
         elif type_ == 'code':
