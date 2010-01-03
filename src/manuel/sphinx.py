@@ -104,14 +104,14 @@ def monkey_compile(code, name, type, flags, dont_inherit):
     return compile(code, name, 'exec', flags, dont_inherit)
 
 def evaluate(region, document, globs):
+    if not isinstance(region.parsed, TestCase):
+        return
+
     try:
         old_compile = doctest.compile
     except AttributeError:
         old_compile = compile
     doctest.compile = monkey_compile
-
-    if not isinstance(region.parsed, TestCase):
-        return
 
     result = manuel.doctest.DocTestResult()
     if region.parsed.group:
