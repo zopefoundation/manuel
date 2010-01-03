@@ -5,7 +5,7 @@ import textwrap
 doctest = __import__('doctest')
 import manuel.doctest
 
-BLOCK_START = re.compile(r'^\.\. test(setup|code|output)::(.*?)\n\n',
+BLOCK_START = re.compile(r'^\.\. test(setup|code|output)::(.*?)\n\s*\n',
                          re.MULTILINE|re.DOTALL)
 BLOCK_END = re.compile(r'(\n\Z|\n(?=\S))')
 
@@ -126,14 +126,19 @@ def evaluate(region, document, globs):
         if match:
             exc_msg = match.group('msg')
             
+    test_options = {doctest.ELLIPSIS: True,
+                    doctest.IGNORE_EXCEPTION_DETAIL: True,
+                    doctest.DONT_ACCEPT_TRUE_FOR_1: True,
+                    }        
     options = region.parsed.options
     if options:
-        import pdb;pdb.set_trace()
-        options = dict([(eval('doctest.' + x.strip()[1:]), True) for x in options.split(',')])
-        
-        
+        for x in options.split(','):
+            x = x.strip()
+            sign = x[0]
+            value = eval('doctest.' + x[1:])
+            test_options[value] = sign == '+'        
     example = doctest.Example(region.parsed.code, output, exc_msg=exc_msg,
-                              lineno=region.lineno, options=options)
+                              lineno=region.lineno, options=test_options)
     test = doctest.DocTest([example], globs, test_name, document.location,
                            region.lineno-1, None)
     runner = doctest.DocTestRunner()
