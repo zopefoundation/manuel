@@ -6,8 +6,6 @@ Unreleased
 
 - fix a small doc thinko
 
-- Added simple support for Sphinx-style testsetup/testcode/testresult blocks.
-
 
 1.0.2 (2009-12-07)
 ------------------

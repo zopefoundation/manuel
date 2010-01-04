@@ -32,7 +32,7 @@ def test_suite():
         ])
 
     tests = ['../index.txt', 'table-example.txt', 'README.txt', 'bugs.txt',
-        'capture.txt', 'sphinx.txt']
+        'capture.txt']
 
     m = manuel.ignore.Manuel()
     m += manuel.doctest.Manuel(optionflags=optionflags, checker=checker)
