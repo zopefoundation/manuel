@@ -10,20 +10,9 @@ import os.path
 import re
 import unittest
 
-#doctest = manuel.absolute_import('doctest')
-from zope.testing import doctest
+doctest = manuel.absolute_import('doctest')
 
-
-def get_abs_path(p):
-    def fake():
-        pass
-    # this contorted dance is neccesitated by me wanting to be able to run the
-    # tests with "bin/py src/manuel/tests.py" since bin/py uses execfile, which
-    # means that __file__ -- which I'd normally use here -- will be "bin/py"
-    # not the path to *this* module
-    here = os.path.dirname(fake.func_code.co_filename)
-    return os.path.join(os.getcwd(), here, p)
-
+here = os.path.dirname(os.path.abspath(__file__))
 
 def test_suite():
     optionflags = doctest.NORMALIZE_WHITESPACE | doctest.ELLIPSIS
@@ -38,7 +27,8 @@ def test_suite():
     m += manuel.doctest.Manuel(optionflags=optionflags, checker=checker)
     m += manuel.codeblock.Manuel()
     m += manuel.capture.Manuel()
-    return manuel.testing.TestSuite(m, *tests)
+    return manuel.testing.TestSuite(m, *tests,
+        globs={'path_to_test': os.path.join(here, 'bugs.txt')})
 
 
 if __name__ == '__main__':

@@ -17,8 +17,7 @@ setup(
     author='Benji York',
     author_email='benji@benjiyork.com',
     description=
-        'Manuel lets you mix and match traditional doctests with custom test '
-        'syntax.',
+        'Manuel lets you build tested documentation.'
     license='ZPL',
     install_requires=[
         'setuptools',

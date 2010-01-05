@@ -91,3 +91,11 @@ failure is still reported.
     Got:
         4
     <BLANKLINE>
+
+
+Universal Newlines
+------------------
+
+Manuel should open documents with universal newlines mode enabled.
+
+    >>> suite = manuel.testing.TestSuite(m, path_to_test)

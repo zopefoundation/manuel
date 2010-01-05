@@ -145,7 +145,8 @@ def TestSuite(m, *paths, **kws):
                 zope.testing.doctest._module_relative_path(
                     calling_module, path))
 
-        document = manuel.Document(open(abs_path).read(), location=abs_path)
+        document = manuel.Document(
+            open(abs_path, 'U').read(), location=abs_path)
         document.parse_with(m)
 
         for regions in group_regions_by_test_case(document):

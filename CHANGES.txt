@@ -1,10 +1,11 @@
 CHANGES
 =======
 
-Unreleased
-----------
+1.0.3 (2010-01-05)
+------------------
 
 - fix a small doc thinko
+- fix the code-block hanlder to allow :linenos:
 
 
 1.0.2 (2009-12-07)
