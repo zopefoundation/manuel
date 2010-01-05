@@ -93,9 +93,22 @@ failure is still reported.
     <BLANKLINE>
 
 
-Universal Newlines
+Code-block Options
 ------------------
 
-Manuel should open documents with universal newlines mode enabled.
+The code-block handler didn't originally allow reST options, so blocks like the
+one below would generate a syntax error during parsing.
 
-    >>> suite = manuel.testing.TestSuite(m, path_to_test)
+    .. code-block:: python
+       :linenos:
+
+       class Foo(object):
+           pass
+
+.. -> source
+
+.. code-block:: python
+
+    import manuel.codeblock
+    m = manuel.codeblock.Manuel()
+    manuel.Document(source).parse_with(m)

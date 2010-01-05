@@ -16,8 +16,7 @@ setup(
     zip_safe=False,
     author='Benji York',
     author_email='benji@benjiyork.com',
-    description=
-        'Manuel lets you build tested documentation.'
+    description= 'Manuel lets you build tested documentation.',
     license='ZPL',
     install_requires=[
         'setuptools',

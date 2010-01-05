@@ -2,7 +2,9 @@ import re
 import manuel
 import textwrap
 
-CODEBLOCK_START = re.compile(r'^\.\.\s*(invisible-)?code-block::?\s*python\b', re.MULTILINE)
+CODEBLOCK_START = re.compile(
+    r'(^\.\.\s*(invisible-)?code-block::?\s*python\b(?:\s*\:\w+\:)*)',
+    re.MULTILINE)
 CODEBLOCK_END = re.compile(r'(\n\Z|\n(?=\S))')
 
 
@@ -13,7 +15,8 @@ class CodeBlock(object):
 
 def find_code_blocks(document):
     for region in document.find_regions(CODEBLOCK_START, CODEBLOCK_END):
-        source = textwrap.dedent('\n'.join(region.source.splitlines()[1:]))
+        start_end = CODEBLOCK_START.search(region.source).end()
+        source = textwrap.dedent(region.source[start_end:])
         source_location = '%s:%d' % (document.location, region.lineno)
         code = compile(source, source_location, 'exec', 0, True)
         document.claim_region(region)
