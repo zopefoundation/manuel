@@ -1,6 +1,13 @@
 CHANGES
 =======
 
+1.0.4 (2010-01-06)
+------------------
+
+- use newer setuptools (one compatible with Subversion 1.6) so built
+  distributions include all files
+
+
 1.0.3 (2010-01-06)
 ------------------
 
