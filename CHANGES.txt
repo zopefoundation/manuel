@@ -6,6 +6,7 @@ CHANGES
 
 - fix a small doc thinko
 - fix the code-block hanlder to allow :linenos:
+- open files in universal newlines mode
 
 
 1.0.2 (2009-12-07)
