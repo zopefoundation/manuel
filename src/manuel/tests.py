@@ -8,6 +8,7 @@ import manuel.testcase
 import manuel.testing
 import os.path
 import re
+import sys
 import unittest
 
 doctest = manuel.absolute_import('doctest')
@@ -20,15 +21,18 @@ def test_suite():
         (re.compile(r'<zope\.testing\.doctest\.'), '<doctest.'),
         ])
 
-    tests = ['../index.txt', 'table-example.txt', 'README.txt', 'bugs.txt',
-        'capture.txt']
+    tests = ['table-example.txt', 'README.txt', 'bugs.txt','capture.txt']
+    if sys.version < '3':
+        # This test can not be automatically 2to3:d, because it intentionally
+        # contains invalid python, and 2to3 can't handle that.
+        tests.append('../index.txt')
 
     m = manuel.ignore.Manuel()
     m += manuel.doctest.Manuel(optionflags=optionflags, checker=checker)
     m += manuel.codeblock.Manuel()
     m += manuel.capture.Manuel()
-    return manuel.testing.TestSuite(m, *tests,
-        globs={'path_to_test': os.path.join(here, 'bugs.txt')})
+    kw = {'globs': {'path_to_test': os.path.join(here, 'bugs.txt')}}
+    return manuel.testing.TestSuite(m, *tests, **kw)
 
 
 if __name__ == '__main__':

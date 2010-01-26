@@ -1,5 +1,5 @@
 source_suffix = '.txt'
-master_doc = 'index'
+master_doc = 'manuel/index'
 project = 'Manuel'
 copyright = 'Benji York'
 version = '1'

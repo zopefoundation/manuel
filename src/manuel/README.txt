@@ -223,7 +223,7 @@ we'll look at parsing.
     >>> for region in document:
     ...     print (region.lineno, region.parsed or region.source)
     (1, 'This is my\ndoctest.\n\n')
-    (4, <zope.testing.doctest.Example instance at 0x...>)
+    (4, <zope.testing.doctest.Example ... at 0x...>)
 
 Now we can evaluate the examples.
 
@@ -231,7 +231,7 @@ Now we can evaluate the examples.
     >>> for region in document:
     ...     print (region.lineno, region.evaluated or region.source)
     (1, 'This is my\ndoctest.\n\n')
-    (4, <manuel.doctest.DocTestResult instance at 0x...>)
+    (4, <manuel.doctest.DocTestResult ... at 0x...>)
 
 And format the results.
 
@@ -336,7 +336,7 @@ number tests.
     (1, '\nWe can have a list of numbers...\n\n')
     (4, <NumbersTest object at 0x...>)
     (5, '\n... and we can test Python.\n\n')
-    (8, <doctest.Example instance at 0x...>)
+    (8, <doctest.Example ... at 0x...>)
     (10, '\n')
 
 We can look at the formatted output to see that each of the two tests failed.
@@ -377,7 +377,8 @@ and the "insert_region_before" and "insert_region_after" methods of Documents.
     ...         if region.parsed:
     ...             continue
     ...         if region.source.strip().endswith('my clone:'):
-    ...             to_be_cloned = document_iter.next().copy()
+    ...             thenext = document_iter.next()
+    ...             to_be_cloned = thenext.copy()
     ...             break
     ...     # if we found the region to cloned, do so
     ...     if to_be_cloned:
@@ -518,7 +519,6 @@ robustly identify referenced variables.
     >>> import StringIO
     >>> import token
     >>> import tokenize
-
     >>> def informative_evaluater_2(region, document, globs):
     ...     if not isinstance(region.parsed, doctest.Example):
     ...         return
