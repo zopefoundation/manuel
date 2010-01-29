@@ -1,7 +1,7 @@
 CHANGES
 =======
 
-1.0.5 (unreleased)
+1.0.5 (2010-01-29)
 ------------------
 
 - fix a bug that caused Manuel to choke on empty documents (patch submitted by
