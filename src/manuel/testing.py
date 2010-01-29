@@ -122,10 +122,15 @@ def TestSuite(m, *paths, **kws):
 
     `globs`
       A dictionary containing initial global variables for the tests.
+
+    `TestCase`
+      The TestCase class to be used instead of manuel.testing.TestCase.
+
     """
 
     suite = unittest.TestSuite()
     globs = kws.pop('globs', {})
+    TestCase_class = kws.pop('TestCase', TestCase)
 
     # walk up the stack frame to find the module that called this function
     for depth in range(2, 5):
@@ -150,6 +155,6 @@ def TestSuite(m, *paths, **kws):
         document.parse_with(m)
 
         for regions in group_regions_by_test_case(document):
-            suite.addTest(TestCase(m, regions, globs, **kws))
+            suite.addTest(TestCase_class(m, regions, globs, **kws))
 
     return suite

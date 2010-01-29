@@ -7,6 +7,8 @@ CHANGES
 - fix a bug that caused Manuel to choke on empty documents (patch submitted by
   Björn Tillenius)
 - add a pointer to Manuel's Subversion repo on the PyPI page
+- add an optional parameter that allows a custom TestCase class to be passed to
+  TestSuite() (patch submitted by Björn Tillenius)
 
 
 1.0.4 (2010-01-06)

@@ -157,6 +157,28 @@ etc.), please `send me an email`_ and I'll expand this section.
 .. _send me an email: benji+manuel@benjiyork.com
 
 
+Customizing the TestCase class
+------------------------------
+
+Manuel has its own :class:`manuel.testing.TestClass` class that
+:class:`manuel.testing.TestSuite` uses. If you want to customize it, you
+can pass in your own class to `TestSuite`.
+
+.. code-block:: python
+
+     import os.path
+     import manuel.testing
+
+     class StripDirsTestCase(manuel.testing.TestCase):
+         def shortDescription(self):
+             return os.path.basename(str(self))
+     suite = manuel.testing.TestSuite(
+         m, path_to_test, TestCase=StripDirsTestCase)
+
+    >>> list(suite)[0].shortDescription()
+    'bugs.txt'
+
+
 .. reset-globs
 .. _doctest:
 
