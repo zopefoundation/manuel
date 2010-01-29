@@ -112,3 +112,14 @@ one below would generate a syntax error during parsing.
     import manuel.codeblock
     m = manuel.codeblock.Manuel()
     manuel.Document(source).parse_with(m)
+
+
+Empty documents
+---------------
+
+While empty documents aren't useful, they are still documents containing
+no tests, and shouldn't break the test suite.
+
+    >>> document = manuel.Document('')
+    >>> document.source
+    '\n'

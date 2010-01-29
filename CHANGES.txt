@@ -1,6 +1,14 @@
 CHANGES
 =======
 
+1.0.5 (unreleased)
+------------------
+
+- fix a bug that caused Manuel to choke on empty documents (patch submitted by
+  Björn Tillenius)
+- add a pointer to Manuel's Subversion repo on the PyPI page
+
+
 1.0.4 (2010-01-06)
 ------------------
 

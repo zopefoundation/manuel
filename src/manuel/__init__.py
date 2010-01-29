@@ -42,7 +42,7 @@ def absolute_import(name):
 
 
 def newlineify(s):
-    if s[-1] != '\n':
+    if s == '' or s[-1] != '\n':
         s += '\n'
     return s
 
