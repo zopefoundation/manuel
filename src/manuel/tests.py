@@ -27,8 +27,10 @@ def test_suite():
     m += manuel.doctest.Manuel(optionflags=optionflags, checker=checker)
     m += manuel.codeblock.Manuel()
     m += manuel.capture.Manuel()
-    return manuel.testing.TestSuite(m, *tests,
-        globs={'path_to_test': os.path.join(here, 'bugs.txt')})
+    # The apparently redundant "**dict()" is to make this code compatible with
+    # Python 2.5 -- it would generate a SyntaxError otherwise.
+    return manuel.testing.TestSuite(m, *tests, **dict(
+        globs={'path_to_test': os.path.join(here, 'bugs.txt')}))
 
 
 if __name__ == '__main__':

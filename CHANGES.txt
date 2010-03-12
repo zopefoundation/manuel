@@ -1,6 +1,12 @@
 CHANGES
 =======
 
+1.0.6 (unreleased)
+------------------
+
+- fix a SyntaxError when running the tests under Python 2.5
+
+
 1.0.5 (2010-01-29)
 ------------------
 
