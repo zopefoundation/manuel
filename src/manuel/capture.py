@@ -68,8 +68,10 @@ def find_captures(document):
             if indent_matches(line):
                 break
             start = offset + 1
-        else:
-            raise RuntimeError("couldn't find the start of the block")
+
+        if start is None:
+            raise RuntimeError("couldn't find the start of the block; "
+                "improper indentation of capture directive?")
 
         _, temp_region = document.split_region(found_region,
             found_region.lineno+start)

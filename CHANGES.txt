@@ -5,6 +5,7 @@ CHANGES
 ------------------
 
 - fix a SyntaxError when running the tests under Python 2.5
+- improved error message for improperly indented capture directive
 
 
 1.0.5 (2010-01-29)

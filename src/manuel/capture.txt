@@ -57,3 +57,28 @@ If two capture directives are nested, the outer one is effective.
     >>> [r.parsed.block for r in document if r.parsed]
     ['Second level of indentation.\n\n    Third level of indentation.\n\n.. -> foo\n']
 
+
+
+Error reporting
+---------------
+
+If the capture directive is accidentally indented, a (reasonable) error will be
+generated.
+
+::
+
+    This is a block that will be captured::
+
+        Block
+
+        .. -> foo
+
+.. -> source
+
+    >>> import manuel
+    >>> document = manuel.Document(source)
+    >>> import manuel.capture
+    >>> manuel.capture.find_captures(document)
+    Traceback (most recent call last):
+        ...
+    RuntimeError: couldn't find the start of the block; improper indentation of capture directive?
