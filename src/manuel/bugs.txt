@@ -5,9 +5,6 @@ Here are demonstrations of various bugs that have been fixed in Manuel.  If you
 encounter a bug in a previous version of Manuel, check here in the newest
 version to see if your bug has been addressed.
 
-This document is likely only interesting to people using creating their own
-plug-ins.
-
 
 Start and End Coinciding
 ------------------------
