@@ -17,6 +17,7 @@ def parse(document):
         region_start = region.lineno
         region_end = region.lineno + region.source.count('\n')
         for chunk in doctest.DocTestParser().parse(region.source):
+            # If the chunk contains prose (as opposed to and example), skip it.
             if isinstance(chunk, basestring):
                 continue
             chunk_line_count = (chunk.source.count('\n')
