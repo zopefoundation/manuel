@@ -1,7 +1,7 @@
 CHANGES
 =======
 
-1.0.6 (unreleased)
+1.1.0 (unreleased)
 ------------------
 
 - fix a SyntaxError when running the tests under Python 2.5
