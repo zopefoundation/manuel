@@ -1,8 +1,11 @@
+import doctest
+import inspect
 import itertools
 import manuel
 import os.path
+import sys
 import unittest
-import zope.testing.doctest
+import zope.testing.exceptions
 
 __all__ = ['TestSuite']
 
@@ -36,7 +39,7 @@ class TestCase(unittest.TestCase):
         results = [r.formatted for r in self.regions if r.formatted]
         if results:
             DIVIDER = '-'*70 + '\n'
-            raise zope.testing.doctest.DocTestFailureException(
+            raise zope.testing.exceptions.DocTestFailureException(
                 '\n' + DIVIDER + DIVIDER.join(results))
 
     def debug(self):
@@ -100,6 +103,31 @@ def group_regions_by_test_case(document):
         # put the region we peeked at back so the inner loop can consume it
         document_iter = itertools.chain([region], document_iter)
 
+# copied from zope.testing.doctest
+def _module_relative_path(module, path):
+    if not inspect.ismodule(module):
+        raise TypeError('Expected a module: %r' % module)
+    if path.startswith('/'):
+        raise ValueError('Module-relative files may not have absolute paths')
+
+    # Find the base directory for the path.
+    if hasattr(module, '__file__'):
+        # A normal module/package
+        basedir = os.path.split(module.__file__)[0]
+    elif module.__name__ == '__main__':
+        # An interactive session.
+        if len(sys.argv)>0 and sys.argv[0] != '':
+            basedir = os.path.split(sys.argv[0])[0]
+        else:
+            basedir = os.curdir
+    else:
+        # A module w/o __file__ (this includes builtins)
+        raise ValueError("Can't resolve paths relative to the module " +
+                         module + " (it has no __file__)")
+
+    # Combine the base directory and the path.
+    return os.path.join(basedir, *(path.split('/')))
+
 
 def TestSuite(m, *paths, **kws):
     """A unittest suite that processes files with Manuel
@@ -133,10 +161,10 @@ def TestSuite(m, *paths, **kws):
     TestCase_class = kws.pop('TestCase', TestCase)
 
     # walk up the stack frame to find the module that called this function
-    for depth in range(2, 5):
+    for depth in range(1, 5):
         try:
-            calling_module = zope.testing.doctest._normalize_module(
-                None, depth=depth)
+            calling_module = \
+                sys.modules[sys._getframe(depth).f_globals['__name__']]
         except KeyError:
             continue
         else:
@@ -146,9 +174,8 @@ def TestSuite(m, *paths, **kws):
         if os.path.isabs(path):
             abs_path = os.path.normpath(path)
         else:
-            abs_path = os.path.abspath(
-                zope.testing.doctest._module_relative_path(
-                    calling_module, path))
+            abs_path = \
+                os.path.abspath(_module_relative_path(calling_module, path))
 
         document = manuel.Document(
             open(abs_path, 'U').read(), location=abs_path)

@@ -20,7 +20,7 @@ setup(
     license='ZPL',
     install_requires=[
         'setuptools',
-        'zope.testing',
+        'zope.testing >= 3.9.1',
         ],
     include_package_data=True,
     long_description = long_description,

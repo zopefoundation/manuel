@@ -1,7 +1,6 @@
 import StringIO
 import manuel
 import os.path
-import zope.testing.doctest
 
 doctest = manuel.absolute_import('doctest')
 
@@ -46,10 +45,9 @@ def parse(document):
 
 
 def evaluate(m, region, document, globs):
-    # If the parsed object is not a doctest Example (from either the stdlib
-    # doctest or zope.testing.doctest), then we don't need to handle it.
-    if not isinstance(region.parsed, doctest.Example) \
-    and not isinstance(region.parsed, zope.testing.doctest.Example):
+    # If the parsed object is not a doctest Example then we don't need to
+    # handle it.
+    if not isinstance(region.parsed, doctest.Example):
         return
 
     result = DocTestResult()

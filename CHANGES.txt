@@ -6,6 +6,8 @@ CHANGES
 
 - fix a SyntaxError when running the tests under Python 2.5
 - improved error message for improperly indented capture directive
+- Manuel no longer uses the now depricated zope.testing.doctest (requires
+  zope.testing 3.9.1 or newer)
 
 
 1.0.5 (2010-01-29)

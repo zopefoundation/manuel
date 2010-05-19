@@ -223,7 +223,7 @@ we'll look at parsing.
     >>> for region in document:
     ...     print (region.lineno, region.parsed or region.source)
     (1, 'This is my\ndoctest.\n\n')
-    (4, <zope.testing.doctest.Example instance at 0x...>)
+    (4, <doctest.Example instance at 0x...>)
 
 Now we can evaluate the examples.
 

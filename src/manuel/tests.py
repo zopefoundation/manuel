@@ -15,16 +15,13 @@ doctest = manuel.absolute_import('doctest')
 here = os.path.dirname(os.path.abspath(__file__))
 
 def test_suite():
-    optionflags = doctest.NORMALIZE_WHITESPACE | doctest.ELLIPSIS
-    checker = renormalizing.RENormalizing([
-        (re.compile(r'<zope\.testing\.doctest\.'), '<doctest.'),
-        ])
-
     tests = ['../index.txt', 'table-example.txt', 'README.txt', 'bugs.txt',
         'capture.txt']
 
+    optionflags = doctest.NORMALIZE_WHITESPACE | doctest.ELLIPSIS
+
     m = manuel.ignore.Manuel()
-    m += manuel.doctest.Manuel(optionflags=optionflags, checker=checker)
+    m += manuel.doctest.Manuel(optionflags=optionflags)
     m += manuel.codeblock.Manuel()
     m += manuel.capture.Manuel()
     # The apparently redundant "**dict()" is to make this code compatible with
