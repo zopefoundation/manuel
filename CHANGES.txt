@@ -1,7 +1,7 @@
 CHANGES
 =======
 
-1.1.0 (unreleased)
+1.1.0 (2010-05-18)
 ------------------
 
 - fix a SyntaxError when running the tests under Python 2.5
@@ -14,10 +14,10 @@ CHANGES
 ------------------
 
 - fix a bug that caused Manuel to choke on empty documents (patch submitted by
-  Björn Tillenius)
+  Bjorn Tillenius)
 - add a pointer to Manuel's Subversion repo on the PyPI page
 - add an optional parameter that allows a custom TestCase class to be passed to
-  TestSuite() (patch submitted by Björn Tillenius)
+  TestSuite() (patch submitted by Bjorn Tillenius)
 
 
 1.0.4 (2010-01-06)
