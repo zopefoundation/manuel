@@ -158,10 +158,12 @@ class RegionContainer(object):
             parser(self)
 
     def evaluate_with(self, m, globs):
-        globs = GlobWrapper(globs)
+        wrapped_globs = GlobWrapper(globs)
         for region in list(self):
             for evaluater in sort_handlers(m.evaluaters):
-                evaluater(region, self, globs)
+                evaluater(region, self, wrapped_globs)
+
+        globs.update(wrapped_globs)
 
     def format_with(self, m):
         for formatter in sort_handlers(m.formatters):

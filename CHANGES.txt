@@ -1,6 +1,13 @@
 CHANGES
 =======
 
+1.1.1 (unreleased)
+------------------
+
+- fix a bug that caused variables assigned in a doctest not to be reflected in
+  the passed-in globs dictionary; fixes half of launchpad bug 582482
+
+
 1.1.0 (2010-05-18)
 ------------------
 
