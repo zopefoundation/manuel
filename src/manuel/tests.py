@@ -1,4 +1,3 @@
-from zope.testing import renormalizing
 import manuel
 import manuel.capture
 import manuel.codeblock

@@ -44,6 +44,14 @@ def parse(document):
             assert region in document
 
 
+class DocTest(doctest.DocTest):
+    def __init__(self, examples, globs, name, filename, lineno, docstring):
+        # do everything like regular doctests, but don't make a copy of globs
+        doctest.DocTest.__init__(self, examples, globs, name, filename, lineno,
+            docstring)
+        self.globs = globs
+
+
 def evaluate(m, region, document, globs):
     # If the parsed object is not a doctest Example then we don't need to
     # handle it.
@@ -59,7 +67,7 @@ def evaluate(m, region, document, globs):
 
     runner.DIVIDER = '' # disable unwanted result formatting
     runner.run(
-        doctest.DocTest([region.parsed], globs, test_name,
+        DocTest([region.parsed], globs, test_name,
             document.location, region.lineno-1, None),
         out=result.write, clear_globs=False)
     region.evaluated = result

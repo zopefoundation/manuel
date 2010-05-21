@@ -6,14 +6,6 @@ import sys
 EARLY = 'early'
 LATE = 'late'
 
-class GlobWrapper(dict):
-
-    def copy(self):
-        # XXX hack to trick doctest into making changes to the shared state
-        # instead of keeping a private copy
-        return self
-
-
 def timing(timing):
     assert timing in (EARLY, LATE)
     def decorate(func):
@@ -158,12 +150,9 @@ class RegionContainer(object):
             parser(self)
 
     def evaluate_with(self, m, globs):
-        wrapped_globs = GlobWrapper(globs)
         for region in list(self):
             for evaluater in sort_handlers(m.evaluaters):
-                evaluater(region, self, wrapped_globs)
-
-        globs.update(wrapped_globs)
+                evaluater(region, self, globs)
 
     def format_with(self, m):
         for formatter in sort_handlers(m.formatters):
