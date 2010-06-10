@@ -5,7 +5,7 @@ import manuel
 import os.path
 import sys
 import unittest
-import zope.testing.exceptions
+import zope.testrunner.exceptions
 
 __all__ = ['TestSuite']
 
@@ -39,7 +39,7 @@ class TestCase(unittest.TestCase):
         results = [r.formatted for r in self.regions if r.formatted]
         if results:
             DIVIDER = '-'*70 + '\n'
-            raise zope.testing.exceptions.DocTestFailureException(
+            raise zope.testrunner.exceptions.DocTestFailureException(
                 '\n' + DIVIDER + DIVIDER.join(results))
 
     def debug(self):

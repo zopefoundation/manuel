@@ -1,6 +1,14 @@
 CHANGES
 =======
 
+1.2.0 (2010-06-09)
+------------------
+
+- Conform to repository policy.
+
+- Switch to using zope.testrunner instead of zope.testing due to API changes.
+  zope.testing is now only required for testing.
+
 1.1.1 (2010-05-20)
 ------------------
 

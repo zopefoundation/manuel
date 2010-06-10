@@ -1,5 +1,19 @@
+##############################################################################
+#
+# Copyright (c) 2004-2007 Zope Foundation and Contributors.
+# All Rights Reserved.
+#
+# This software is subject to the provisions of the Zope Public License,
+# Version 2.1 (ZPL).  A copy of the ZPL should accompany this distribution.
+# THIS SOFTWARE IS PROVIDED "AS IS" AND ANY AND ALL EXPRESS OR IMPLIED
+# WARRANTIES ARE DISCLAIMED, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
+# WARRANTIES OF TITLE, MERCHANTABILITY, AGAINST INFRINGEMENT, AND FITNESS
+# FOR A PARTICULAR PURPOSE.
+#
+##############################################################################
+"""Setup for manuel package
+"""
 from setuptools import setup, find_packages
-import os
 
 long_description = (
     open('README.txt').read()
@@ -9,7 +23,7 @@ long_description = (
 
 setup(
     name='manuel',
-    version='0',
+    version='1.2.0dev',
     url = 'http://pypi.python.org/pypi/manuel',
     packages=find_packages('src'),
     package_dir={'':'src'},
@@ -18,9 +32,12 @@ setup(
     author_email='benji@benjiyork.com',
     description= 'Manuel lets you build tested documentation.',
     license='ZPL',
+    extras_require={
+        'tests': ['zope.testing']
+        },
     install_requires=[
         'setuptools',
-        'zope.testing >= 3.9.1',
+        'zope.testrunner',
         ],
     include_package_data=True,
     long_description = long_description,
