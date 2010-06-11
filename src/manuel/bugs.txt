@@ -112,7 +112,6 @@ object that uses our globs dict from above.
 
     test = FakeTest()
 
-
 Now we will use the globs as a module.
 
     >>> import zope.testing.module
