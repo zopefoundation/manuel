@@ -8,10 +8,15 @@ import manuel.testing
 import os.path
 import re
 import unittest
+import zope.testing.renormalizing
 
 doctest = manuel.absolute_import('doctest')
 
 here = os.path.dirname(os.path.abspath(__file__))
+
+checker = zope.testing.renormalizing.RENormalizing([
+    (re.compile(r"<unittest\.result\.TestResult"), '<unittest.TestResult'),
+    ])
 
 def test_suite():
     tests = ['../index.txt', 'table-example.txt', 'README.txt', 'bugs.txt',
@@ -20,7 +25,7 @@ def test_suite():
     optionflags = doctest.NORMALIZE_WHITESPACE | doctest.ELLIPSIS
 
     m = manuel.ignore.Manuel()
-    m += manuel.doctest.Manuel(optionflags=optionflags)
+    m += manuel.doctest.Manuel(optionflags=optionflags, checker=checker)
     m += manuel.codeblock.Manuel()
     m += manuel.capture.Manuel()
     m += manuel.testcase.SectionManuel()
