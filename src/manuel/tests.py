@@ -23,6 +23,7 @@ def test_suite():
     m += manuel.doctest.Manuel(optionflags=optionflags)
     m += manuel.codeblock.Manuel()
     m += manuel.capture.Manuel()
+    m += manuel.testcase.SectionManuel()
     # The apparently redundant "**dict()" is to make this code compatible with
     # Python 2.5 -- it would generate a SyntaxError otherwise.
     return manuel.testing.TestSuite(m, *tests, **dict(

@@ -56,8 +56,8 @@ When rendered to HTML, it will look like this:
 Documents
 ---------
 
-Manuel plug-ins operate on instances of :class:`manuel.Document`.  As an
-example we'll construct one with these contents::
+Here is an example of a source document we want our plug-in to be able to
+understand::
 
     The "or" operator
     =================
@@ -87,7 +87,6 @@ Manuel plug-ins operate on instances of :class:`manuel.Document`.
 
 Parsing
 -------
-
 
 We need an object to represent the tables.
 
