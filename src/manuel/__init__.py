@@ -45,6 +45,7 @@ class Region(object):
     parsed = None
     evaluated = None
     formatted = None
+    countable = False
 
     def __init__(self, lineno, source, start_match=None, end_match=None,
             provenance=None):

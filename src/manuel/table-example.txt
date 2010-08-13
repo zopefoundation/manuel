@@ -137,6 +137,7 @@ pertinent details, and instantiate Table objects.
             table = Table(expression, variables, examples)
             document.claim_region(region)
             region.parsed = table
+            region.countable = True
 
 If we parse the Document we can see that the table was recognized.
 

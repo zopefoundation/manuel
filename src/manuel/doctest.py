@@ -56,6 +56,7 @@ def parse(document):
             for chunk in group:
                 chunk.lineno -= chunk_0_lineno
             found.parsed = group
+            found.countable = True
 
             assert region in document
 

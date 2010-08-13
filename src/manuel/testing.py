@@ -49,7 +49,7 @@ class TestCase(unittest.TestCase):
         self.tearDown()
 
     def countTestCases(self):
-        return len([r for r in self.regions if r.parsed])
+        return len([r for r in self.regions if r.parsed and r.countable])
 
     def id(self):
         return self.regions.id
