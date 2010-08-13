@@ -223,7 +223,7 @@ we'll look at parsing.
     >>> for region in document:
     ...     print (region.lineno, region.parsed or region.source)
     (1, 'This is my\ndoctest.\n\n')
-    (4, <doctest.Example instance at 0x...>)
+    (4, [<doctest.Example instance at 0x...>])
 
 Now we can evaluate the examples.
 
@@ -336,7 +336,7 @@ number tests.
     (1, '\nWe can have a list of numbers...\n\n')
     (4, <NumbersTest object at 0x...>)
     (5, '\n... and we can test Python.\n\n')
-    (8, <doctest.Example instance at 0x...>)
+    (8, [<doctest.Example instance at 0x...>])
     (10, '\n')
 
 We can look at the formatted output to see that each of the two tests failed.
@@ -431,12 +431,12 @@ information on failures.
     import doctest
 
     def informative_evaluater(region, document, globs):
-        if not isinstance(region.parsed, doctest.Example):
+        if not isinstance(region.parsed, manuel.doctest.DocTestExamples):
             return
         if region.evaluated.getvalue():
             info = ''
             for name in sorted(globs):
-                if name in region.parsed.source:
+                if name in region.source:
                     info += '\n    ' + name + ' = ' + repr(globs[name])
 
             if info:
@@ -520,7 +520,7 @@ robustly identify referenced variables.
     >>> import tokenize
 
     >>> def informative_evaluater_2(region, document, globs):
-    ...     if not isinstance(region.parsed, doctest.Example):
+    ...     if not isinstance(region.parsed, manuel.doctest.DocTestExamples):
     ...         return
     ...
     ...     if region.evaluated.getvalue():

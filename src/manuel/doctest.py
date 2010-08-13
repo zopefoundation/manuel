@@ -9,20 +9,35 @@ class DocTestResult(StringIO.StringIO):
     pass
 
 
+class DocTestExamples(list):
+    pass
+
+
+def group_examples(chunks):
+    # Group contiguous doctest examples
+    group = DocTestExamples()
+    for chunk in chunks:
+        if chunk == '':
+            continue
+        if isinstance(chunk, doctest.Example):
+            group.append(chunk)
+        elif group:
+            yield group
+            group = DocTestExamples()
+    if group:
+        yield group
+
 def parse(document):
     for region in list(document):
         if region.parsed:
             continue
         region_start = region.lineno
         region_end = region.lineno + region.source.count('\n')
-        for chunk in doctest.DocTestParser().parse(region.source):
-            # If the chunk contains prose (as opposed to and example), skip it.
-            if isinstance(chunk, basestring):
-                continue
-            chunk_line_count = (chunk.source.count('\n')
-                + chunk.want.count('\n'))
-
-            split_line_1 = region_start + chunk.lineno
+        for group in group_examples(doctest.DocTestParser().parse(region.source)):
+            chunk_line_count = sum(chunk.source.count('\n')
+                + chunk.want.count('\n') for chunk in group)
+            chunk_0_lineno = group[0].lineno
+            split_line_1 = region_start + chunk_0_lineno
             split_line_2 = split_line_1 + chunk_line_count
 
             # if there is some source we need to trim off the front...
@@ -38,8 +53,9 @@ def parse(document):
 
             # Since we're treating each example as a stand-alone thing, we need
             # to reset its line number to zero.
-            chunk.lineno = 0
-            found.parsed = chunk
+            for chunk in group:
+                chunk.lineno -= chunk_0_lineno
+            found.parsed = group
 
             assert region in document
 
@@ -55,7 +71,7 @@ class DocTest(doctest.DocTest):
 def evaluate(m, region, document, globs):
     # If the parsed object is not a doctest Example then we don't need to
     # handle it.
-    if not isinstance(region.parsed, doctest.Example):
+    if not isinstance(region.parsed, DocTestExamples):
         return
 
     result = DocTestResult()
@@ -67,7 +83,7 @@ def evaluate(m, region, document, globs):
 
     runner.DIVIDER = '' # disable unwanted result formatting
     runner.run(
-        DocTest([region.parsed], globs, test_name,
+        DocTest(region.parsed, globs, test_name,
             document.location, region.lineno-1, None),
         out=result.write, clear_globs=False)
     region.evaluated = result
