@@ -154,11 +154,21 @@ def TestSuite(m, *paths, **kws):
     `TestCase`
       The TestCase class to be used instead of manuel.testing.TestCase.
 
+    `layer`
+      A zope.testrunner layer object to be set on each TestCase.
+
+    `addLayerToGlobs`
+      Defaults to True. If `layer` is supplied add it to the `globs`.
     """
 
     suite = unittest.TestSuite()
     globs = kws.pop('globs', {})
     TestCase_class = kws.pop('TestCase', TestCase)
+    layer = kws.pop('layer', None)
+    if layer is not None:
+        addLayerToGlobs = kws.pop('addLayerToGlobs', True)
+        if addLayerToGlobs and 'layer' not in globs:
+            globs['layer'] = layer
 
     # walk up the stack frame to find the module that called this function
     for depth in range(1, 5):
@@ -182,6 +192,9 @@ def TestSuite(m, *paths, **kws):
         document.parse_with(m)
 
         for regions in group_regions_by_test_case(document):
-            suite.addTest(TestCase_class(m, regions, globs, **kws))
+            test = TestCase_class(m, regions, globs, **kws)
+            if layer is not None:
+                test.layer = layer
+            suite.addTest(test)
 
     return suite
