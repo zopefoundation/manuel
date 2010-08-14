@@ -4,7 +4,10 @@ import itertools
 import manuel
 import os.path
 import sys
-import unittest
+try:
+    import unittest2 as unittest
+except ImportError:
+    import unittest
 import zope.testrunner.exceptions
 
 __all__ = ['TestSuite']

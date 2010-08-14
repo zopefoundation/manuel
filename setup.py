@@ -33,7 +33,8 @@ setup(
     description= 'Manuel lets you build tested documentation.',
     license='ZPL',
     extras_require={
-        'tests': ['zope.testing']
+        'tests': ['zope.testing'],
+        'unittest2': ['unittest2'],
         },
     install_requires=[
         'setuptools',

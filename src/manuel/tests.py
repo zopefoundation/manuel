@@ -7,7 +7,10 @@ import manuel.testcase
 import manuel.testing
 import os.path
 import re
-import unittest
+try:
+    import unittest2 as unittest
+except ImportError:
+    import unittest
 import zope.testing.renormalizing
 
 doctest = manuel.absolute_import('doctest')
