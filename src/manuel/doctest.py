@@ -62,14 +62,24 @@ def evaluate(m, region, document, globs):
     test_name = os.path.split(document.location)[1]
     if m.debug:
         runner = m.debug_runner
+        out = None
     else:
         runner = m.runner
+        out = result.write
 
+    # Use the testrunner-set option flags when running these tests.
+    old_optionflags = runner.optionflags
+    runner.optionflags |= doctest._unittest_reportflags
     runner.DIVIDER = '' # disable unwanted result formatting
+
+    # Here's where everything happens.
+    example = region.parsed
     runner.run(
-        DocTest([region.parsed], globs, test_name,
+        DocTest([example], globs, test_name,
             document.location, region.lineno-1, None),
-        out=result.write, clear_globs=False)
+        out=out, clear_globs=False)
+
+    runner.optionflags = old_optionflags # Reset the option flags.
     region.evaluated = result
 
 
@@ -86,7 +96,6 @@ class Manuel(manuel.Manuel):
         self.runner = doctest.DocTestRunner(optionflags=optionflags,
             checker=checker)
         self.debug_runner = doctest.DebugRunner(optionflags=optionflags)
-        self.debug = False
         def evaluate_closure(region, document, globs):
             # capture "self"
             evaluate(self, region, document, globs)

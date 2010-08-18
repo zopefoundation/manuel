@@ -20,6 +20,7 @@ def normalize_module_path(module_path):
         module_path = module_path[:-1]
     return module_path
 
+
 def absolute_import(name):
     module_path = normalize_module_path(imp.find_module(name)[1])
 
@@ -315,6 +316,8 @@ class Document(RegionContainer):
 
 class Manuel(object):
 
+    _debug = False
+
     def __init__(self, parsers=None, evaluaters=None, formatters=None):
         if parsers is not None:
             self.parsers = parsers
@@ -331,6 +334,9 @@ class Manuel(object):
         else:
             self.formatters = []
 
+        # other instances that this one has been extended with
+        self.others = []
+
     def add_parser(self, parser):
         self.parsers.append(parser)
 
@@ -341,9 +347,27 @@ class Manuel(object):
         self.formatters.append(formatter)
 
     def __extend(self, other):
+        self.others.append(other)
+        self.debug = max(self.debug, other.debug)
         self.parsers.extend(other.parsers)
         self.evaluaters.extend(other.evaluaters)
         self.formatters.extend(other.formatters)
+
+    # the testing integration (manuel.testing) sets this flag when needed
+    @apply
+    def debug():
+        def getter(self):
+            debug = self._debug
+            if self.others:
+                debug = max(debug, max(m.debug for m in self.others))
+            return debug
+
+        def setter(self, value):
+            self._debug = value
+            for m in self.others:
+                m.debug = value
+
+        return property(getter, setter)
 
     def __add__(self, other):
         m = Manuel()

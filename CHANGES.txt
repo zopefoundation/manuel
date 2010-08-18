@@ -1,13 +1,22 @@
 CHANGES
 =======
 
+1.3.0 (unreleased)
+------------------
+
+- Respect test runner reporting switches (e.g., zope.testrunner's --ndiff
+  switch)
+- Fixed a bug that caused post-mortem debugging to not work most of the
+  time.
+
+
 1.2.0 (2010-06-10)
 ------------------
 
 - Conform to repository policy.
-
 - Switch to using zope.testrunner instead of zope.testing due to API changes.
   zope.testing is now only required for testing.
+
 
 1.1.1 (2010-05-20)
 ------------------
