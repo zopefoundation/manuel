@@ -23,7 +23,7 @@ long_description = (
 
 setup(
     name='manuel',
-    version='0',
+    version='1.3.0',
     url = 'http://pypi.python.org/pypi/manuel',
     packages=find_packages('src'),
     package_dir={'':'src'},
