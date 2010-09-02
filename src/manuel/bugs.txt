@@ -179,3 +179,20 @@ resulting instance, the other one gets the value too.
     True
     >>> m3.debug
     True
+
+TestCase id methods
+-------------------
+
+Twisted's testrunner, trial, makes use of the :meth:`id` method of
+:class:`TestCase` instances in a way that requires it to be a
+meaningful string.
+
+For :class:`manuel.testing.TestCase` instances, this used to return
+``None``. As you can see below, the
+:meth:`manuel.testing.TestCase.shortDescription` is now returned
+instead:
+
+>>> from manuel.testing import TestCase
+>>> m = manuel.Manuel()
+>>> print TestCase(m,manuel.RegionContainer(),None).id()
+<memory>

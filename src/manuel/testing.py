@@ -51,16 +51,13 @@ class TestCase(unittest.TestCase):
     def countTestCases(self):
         return len([r for r in self.regions if r.parsed])
 
-    def id(self):
-        return self.regions.id
-
     def shortDescription(self):
         if self.regions.id:
             return self.regions.location + ':' + self.regions.id
         else:
             return self.regions.location
 
-    __str__ = __repr__ = shortDescription
+    __str__ = __repr__ = id = shortDescription
 
 
 def group_regions_by_test_case(document):
