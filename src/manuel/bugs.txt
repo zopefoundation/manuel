@@ -179,6 +179,3 @@ resulting instance, the other one gets the value too.
     True
     >>> m3.debug
     True
-
-    >>> 1
-    2

@@ -303,9 +303,6 @@ To do that you might write your document like this:
 This uses the syntax implemented in :mod:`manuel.capture` to capture a block of
 text into a variable (the one named after "->").
 
-    >>> 1
-    2
-
 Whenever a line of the structure ".. -> VAR" is detected, the text of the
 *previous* block will be stored in the given variable.
 
