@@ -461,7 +461,7 @@ invisible-code-block:: python"::
     >>> document.process_with(m, globs={})
     >>> print document.formatted()
 
-.. note: The "invisible-code-block" directive will work with either one or two
+.. note:: The "invisible-code-block" directive will work with either one or two
    colons.  The reason is that reST processers (like docutils and Sphinx) will
    generate an error for unrecognized directives (like invisible-code-block).
    Therefore you can use a single colon and the line will be interpreted as a
