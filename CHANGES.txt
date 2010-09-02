@@ -64,8 +64,8 @@ CHANGES
 1.0.2 (2009-12-07)
 ------------------
 
-- fix a bug that caused instances of :class:`zope.testing.doctest.Example`
-  (and instances of subclasses of the same) to be silently ignored.
+- fix a bug that caused instances of zope.testing.doctest.Example (and
+  instances of subclasses of the same) to be silently ignored.
 
 
 1.0.1 (2009-08-31)
