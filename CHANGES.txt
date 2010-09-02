@@ -57,15 +57,15 @@ CHANGES
 ------------------
 
 - fix a small doc thinko
-- fix the code-block hanlder to allow :linenos:
+- fix the code-block handler to allow :linenos:
 - open files in universal newlines mode
 
 
 1.0.2 (2009-12-07)
 ------------------
 
-- fix a bug that caused instances of zope.testin.doctest.Example (and instances
-  of subclasses of the same) to be silently ignored
+- fix a bug that caused instances of :class:`zope.testing.doctest.Example`
+  (and instances of subclasses of the same) to be silently ignored.
 
 
 1.0.1 (2009-08-31)
