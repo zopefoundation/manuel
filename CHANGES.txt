@@ -8,6 +8,8 @@ CHANGES
   switch)
 - Fixed a bug that caused post-mortem debugging to not work most of the
   time.
+- Made :meth:`manuel.testing.TestCase.id` return a sensible textual value
+  at all times. This keeps Twisted's ``trial`` testrunner happy.
 
 
 1.2.0 (2010-06-10)
