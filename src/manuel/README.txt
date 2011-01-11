@@ -259,6 +259,42 @@ simplify things.
     Got:
         2
 
+Alternate doctest parsers
+~~~~~~~~~~~~~~~~~~~~~~~~~
+
+You can pass an alternate doctest parser to manuel.doctest.Manuel to
+customize how examples are parsed.  Here's an example that changes the
+example start string from ">>>" to "py>":
+
+    >>> import doctest
+    >>> class DocTestPyParser(doctest.DocTestParser):
+    ...    _EXAMPLE_RE = re.compile(r'''
+    ...        (?P<source>
+    ...             (?:^(?P<indent> [ ]*) py>    .*)    # PS1 line
+    ...            (?:\n           [ ]*  \.\.\. .*)*)  # PS2 lines
+    ...        \n?
+    ...        (?P<want> (?:(?![ ]*$)    # Not a blank line
+    ...                     (?![ ]*py>)  # Not a line starting with PS1
+    ...                     .*$\n?       # But any other line
+    ...                  )*)
+    ...        ''', re.MULTILINE | re.VERBOSE)
+
+    >>> m = manuel.doctest.Manuel(parser=DocTestPyParser())
+    >>> document = manuel.Document("""This is my
+    ... doctest.
+    ...
+    ...     py> 1 + 1
+    ...     42
+    ... """)
+    >>> document.process_with(m, globs={})
+    >>> print document.formatted(),
+    File "<memory>", line 4, in <memory>
+    Failed example:
+        1 + 1
+    Expected:
+        42
+    Got:
+        2
 
 Globals
 -------

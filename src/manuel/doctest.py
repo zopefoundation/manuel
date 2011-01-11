@@ -9,13 +9,13 @@ class DocTestResult(StringIO.StringIO):
     pass
 
 
-def parse(document):
+def parse(document, parser):
     for region in list(document):
         if region.parsed:
             continue
         region_start = region.lineno
         region_end = region.lineno + region.source.count('\n')
-        for chunk in doctest.DocTestParser().parse(region.source):
+        for chunk in parser.parse(region.source):
             # If the chunk contains prose (as opposed to and example), skip it.
             if isinstance(chunk, basestring):
                 continue
@@ -92,11 +92,15 @@ def format(document):
 
 class Manuel(manuel.Manuel):
 
-    def __init__(self, optionflags=0, checker=None):
+    def __init__(self, optionflags=0, checker=None, parser=None):
         self.runner = doctest.DocTestRunner(optionflags=optionflags,
             checker=checker)
         self.debug_runner = doctest.DebugRunner(optionflags=optionflags)
         def evaluate_closure(region, document, globs):
             # capture "self"
             evaluate(self, region, document, globs)
-        manuel.Manuel.__init__(self, [parse], [evaluate_closure], [format])
+        parser = parser or doctest.DocTestParser()
+        manuel.Manuel.__init__(
+            self,
+            [lambda document: parse(document, parser)],
+            [evaluate_closure], [format])
