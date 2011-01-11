@@ -1,6 +1,14 @@
 CHANGES
 =======
 
+1.4.9 (unreleased)
+------------------
+
+- Added a ``parser`` keyword argument to manuel.doctest.Manuel to
+  allow a custom doctest parser to be passed in.  This allows easily
+  adding support for other languages or other (but similar) example
+  syntaxes.
+
 1.3.0 (2010-09-02)
 ------------------
 
