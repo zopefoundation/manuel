@@ -296,6 +296,30 @@ example start string from ">>>" to "py>":
     Got:
         2
 
+Multiple doctest parsers
+~~~~~~~~~~~~~~~~~~~~~~~~
+
+You may use server doctest parsers in the same session, for example,
+to support shell commands and Python code in the same document.
+
+    >>> m = (manuel.doctest.Manuel(parser=DocTestPyParser()) +
+    ...      manuel.doctest.Manuel())
+
+    >>> document = manuel.Document("""
+    ...
+    ...     py> i = 0
+    ...     py> i += 1
+    ...     py> i
+    ...     1
+    ...
+    ...     >>> j = 0
+    ...     >>> j += 1
+    ...     >>> j
+    ...     1
+    ... """)
+    >>> document.process_with(m, globs={})
+    >>> print document.formatted(),
+
 Globals
 -------
 
