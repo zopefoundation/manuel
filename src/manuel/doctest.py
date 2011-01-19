@@ -58,7 +58,7 @@ def evaluate(m, region, document, globs):
     # If the parsed object is not a doctest Example then we don't need to
     # handle it.
 
-    if getattr(region, '_manual', None) is not m:
+    if getattr(region.parsed, '_manual', None) is not m:
         return
 
     result = DocTestResult()

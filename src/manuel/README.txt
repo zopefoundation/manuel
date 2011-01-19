@@ -316,6 +316,7 @@ to support shell commands and Python code in the same document.
     ...     >>> j += 1
     ...     >>> j
     ...     1
+    ...
     ... """)
     >>> document.process_with(m, globs={})
     >>> print document.formatted(),
@@ -605,6 +606,7 @@ robustly identify referenced variables.
 Now when we have a failure, only the genuinely referenced variables will be
 included in the debugging information.
 
+    >>> document = manuel.Document(document.source)
     >>> document.process_with(m, globs={})
     >>> print document.formatted(),
     File "<memory>", line 10, in <memory>
