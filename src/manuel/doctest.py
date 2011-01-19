@@ -9,7 +9,7 @@ class DocTestResult(StringIO.StringIO):
     pass
 
 
-def parse(document, parser):
+def parse(self, document, parser):
     for region in list(document):
         if region.parsed:
             continue
@@ -19,6 +19,8 @@ def parse(document, parser):
             # If the chunk contains prose (as opposed to and example), skip it.
             if isinstance(chunk, basestring):
                 continue
+
+            chunk._manual = self
             chunk_line_count = (chunk.source.count('\n')
                 + chunk.want.count('\n'))
 
@@ -55,7 +57,8 @@ class DocTest(doctest.DocTest):
 def evaluate(m, region, document, globs):
     # If the parsed object is not a doctest Example then we don't need to
     # handle it.
-    if not isinstance(region.parsed, doctest.Example):
+
+    if getattr(region, '_manual', None) is not m:
         return
 
     result = DocTestResult()
@@ -102,5 +105,5 @@ class Manuel(manuel.Manuel):
         parser = parser or doctest.DocTestParser()
         manuel.Manuel.__init__(
             self,
-            [lambda document: parse(document, parser)],
+            [lambda document: parse(self, document, parser)],
             [evaluate_closure], [format])

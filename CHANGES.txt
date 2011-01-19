@@ -1,6 +1,13 @@
 CHANGES
 =======
 
+1.4.1 (2011-01-19)
+------------------
+
+- Fixed a bug that caused extra example evaluation if multiple doctest
+  manuels were used at once (e.g. to execute Python and shell code in
+  the same document).
+
 1.4.0 (2011-01-11)
 ------------------
 
