@@ -1,7 +1,7 @@
 CHANGES
 =======
 
-1.4.1 (2011-01-19)
+1.4.1 (2011-01-25)
 ------------------
 
 - Fixed a bug that caused extra example evaluation if multiple doctest
