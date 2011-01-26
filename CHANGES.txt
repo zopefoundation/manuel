@@ -8,6 +8,7 @@ CHANGES
   manuels were used at once (e.g. to execute Python and shell code in
   the same document).
 
+
 1.4.0 (2011-01-11)
 ------------------
 
@@ -15,6 +16,7 @@ CHANGES
   allow a custom doctest parser to be passed in.  This allows easily
   adding support for other languages or other (but similar) example
   syntaxes.
+
 
 1.3.0 (2010-09-02)
 ------------------

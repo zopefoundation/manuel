@@ -9,7 +9,7 @@ class DocTestResult(StringIO.StringIO):
     pass
 
 
-def parse(self, document, parser):
+def parse(m, document, parser):
     for region in list(document):
         if region.parsed:
             continue
@@ -20,7 +20,7 @@ def parse(self, document, parser):
             if isinstance(chunk, basestring):
                 continue
 
-            chunk._manual = self
+            chunk._manual = m
             chunk_line_count = (chunk.source.count('\n')
                 + chunk.want.count('\n'))
 

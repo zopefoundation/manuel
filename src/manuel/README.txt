@@ -299,7 +299,7 @@ example start string from ">>>" to "py>":
 Multiple doctest parsers
 ~~~~~~~~~~~~~~~~~~~~~~~~
 
-You may use server doctest parsers in the same session, for example,
+You may use several doctest parsers in the same session, for example,
 to support shell commands and Python code in the same document.
 
     >>> m = (manuel.doctest.Manuel(parser=DocTestPyParser()) +
