@@ -122,7 +122,7 @@ Using zope.testing
 
 If you want to use a more featureful test runner you can use zope.testing's
 test runner (usable stand-alone -- it isn't dependent on the Zope application
-server).  Create a file named :file:`tests.py` with a :func:`test_setup`
+server).  Create a file named :file:`tests.py` with a :func:`test_suite`
 function that returns a test suite.
 
 The suite can be either a :class:`manuel.testing.TestSuite` object or a
