@@ -21,6 +21,8 @@ long_description = (
     + open('CHANGES.txt').read()
     )
 
+tests_require = ['zope.testing']
+
 setup(
     name='manuel',
     version='0',
@@ -33,11 +35,12 @@ setup(
     description= 'Manuel lets you build tested documentation.',
     license='ZPL',
     extras_require={
-        'tests': ['zope.testing']
+        'tests': tests_require,
         },
+    tests_require = tests_require,
+    test_suite = 'manuel.tests.test_suite',
     install_requires=[
         'setuptools',
-        'zope.testrunner',
         ],
     include_package_data=True,
     long_description = long_description,

@@ -1,6 +1,13 @@
 CHANGES
 =======
 
+1.5.0 (2011-03-08)
+------------------
+
+- Removed the dependency on zope.testrunner
+- Added the ability to run the tests using "setup.py test".
+
+
 1.4.1 (2011-01-25)
 ------------------
 

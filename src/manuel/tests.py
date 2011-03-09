@@ -66,7 +66,3 @@ def test_suite():
         suite,
         doctest.DocTestSuite(),
         ))
-
-
-if __name__ == '__main__':
-    unittest.TextTestRunner().run(test_suite())
