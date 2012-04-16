@@ -1,4 +1,4 @@
-import doctest
+from . import doctest
 import inspect
 import itertools
 import manuel
@@ -70,7 +70,7 @@ def group_regions_by_test_case(document):
         while True:
             region = None # being defensive
             try:
-                region = document_iter.next()
+                region = next(document_iter)
             except StopIteration:
                 if not accumulated_regions:
                     break
@@ -94,7 +94,7 @@ def group_regions_by_test_case(document):
 
         # if there are no more regions, stop
         try:
-            region = document_iter.next()
+            region = next(document_iter)
         except StopIteration:
             break
 

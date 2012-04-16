@@ -83,7 +83,7 @@ afterward.
 
 The doctest in the `source` variable ran with no errors.
 
-    >>> print document.formatted()
+    >>> six.print_(document.formatted())
 
 And now the globs dictionary reflects the changes made when the doctest ran.
 
@@ -142,7 +142,7 @@ Now if we run this test through Manuel, the fake module machinery works.
 
 The doctest in the `source` variable ran with no errors.
 
-    >>> print document.formatted()
+    >>> six.print_(document.formatted())
 
 We should clean up now.
 
@@ -192,5 +192,5 @@ instead:
 
     >>> from manuel.testing import TestCase
     >>> m = manuel.Manuel()
-    >>> print TestCase(m, manuel.RegionContainer(), None).id()
+    >>> six.print_(TestCase(m, manuel.RegionContainer(), None).id())
     <memory>

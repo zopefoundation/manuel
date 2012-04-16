@@ -72,7 +72,7 @@ the begining of a region and the second to identify the end.
     ...     )[0]
     >>> region.lineno
     2
-    >>> print region.source
+    >>> six.print_(region.source)
     one: 1, 2, 3
     two: 4, 5, 7
     three: 3, 5, 1
@@ -109,8 +109,8 @@ and create NumbersTest objects from the source text.
     >>> def parse(document):
     ...     for region in document.find_regions(numbers_test_finder):
     ...         description = region.start_match.group('description')
-    ...         numbers = map(
-    ...             int, region.start_match.group('numbers').split(','))
+    ...         numbers = list(map(
+    ...             int, region.start_match.group('numbers').split(',')))
     ...         test = NumbersTest(description, numbers)
     ...         document.claim_region(region)
     ...         region.parsed = test
@@ -221,17 +221,17 @@ we'll look at parsing.
     >>> m = manuel.doctest.Manuel()
     >>> document.parse_with(m)
     >>> for region in document:
-    ...     print (region.lineno, region.parsed or region.source)
+    ...     print((region.lineno, region.parsed or region.source))
     (1, 'This is my\ndoctest.\n\n')
-    (4, <doctest.Example instance at 0x...>)
+    (4, <doctest.Example ...>)
 
 Now we can evaluate the examples.
 
     >>> document.evaluate_with(m, globs={})
     >>> for region in document:
-    ...     print (region.lineno, region.evaluated or region.source)
+    ...     print((region.lineno, region.evaluated or region.source))
     (1, 'This is my\ndoctest.\n\n')
-    (4, <manuel.doctest.DocTestResult instance at 0x...>)
+    (4, <manuel.doctest.DocTestResult ...>)
 
 And format the results.
 
@@ -250,7 +250,7 @@ simplify things.
     ...     42
     ... """)
     >>> document.process_with(m, globs={})
-    >>> print document.formatted(),
+    >>> six.print_(document.formatted(), end='')
     File "<memory>", line 4, in <memory>
     Failed example:
         1 + 1
@@ -287,7 +287,7 @@ example start string from ">>>" to "py>":
     ...     42
     ... """)
     >>> document.process_with(m, globs={})
-    >>> print document.formatted(),
+    >>> six.print_(document.formatted(), end='')
     File "<memory>", line 4, in <memory>
     Failed example:
         1 + 1
@@ -319,7 +319,7 @@ to support shell commands and Python code in the same document.
     ...
     ... """)
     >>> document.process_with(m, globs={})
-    >>> print document.formatted(),
+    >>> six.print_(document.formatted(), end='')
 
 Globals
 -------
@@ -338,7 +338,7 @@ changes made by earlier evaluaters are available to the current evaluator.
     ...     1
     ... """)
     >>> document.process_with(m, globs={})
-    >>> print document.formatted(),
+    >>> six.print_(document.formatted(), end='')
 
 Imported modules are added to the global namespace as well.
 
@@ -352,7 +352,7 @@ Imported modules are added to the global namespace as well.
     ...
     ... """)
     >>> document.process_with(m, globs={})
-    >>> print document.formatted(),
+    >>> six.print_(document.formatted(), end='')
 
 
 Combining Test Types
@@ -393,19 +393,19 @@ The document was parsed and has a mixture of prose and parsed doctests and
 number tests.
 
     >>> for region in document:
-    ...     print (region.lineno, region.parsed or region.source)
+    ...     print((region.lineno, region.parsed or region.source))
     (1, '\nWe can have a list of numbers...\n\n')
     (4, <NumbersTest object at 0x...>)
     (5, '\n... and we can test Python.\n\n')
-    (8, <doctest.Example instance at 0x...>)
+    (8, <doctest.Example ...>)
     (10, '\n')
 
 We can look at the formatted output to see that each of the two tests failed.
 
     >>> for region in document:
     ...     if region.formatted:
-    ...         print '-'*70
-    ...         print region.formatted,
+    ...         six.print_('-'*70)
+    ...         six.print_(region.formatted, end='')
     ----------------------------------------------------------------------
     the numbers aren't in sorted order: 3, 6, 2
     ----------------------------------------------------------------------
@@ -438,7 +438,7 @@ and the "insert_region_before" and "insert_region_after" methods of Documents.
     ...         if region.parsed:
     ...             continue
     ...         if region.source.strip().endswith('my clone:'):
-    ...             to_be_cloned = document_iter.next().copy()
+    ...             to_be_cloned = six.advance_iterator(document_iter).copy()
     ...             break
     ...     # if we found the region to cloned, do so
     ...     if to_be_cloned:
@@ -529,7 +529,7 @@ When we run the document through our Manuel instance, we see the additional
 information.
 
     >>> document.process_with(m, globs={})
-    >>> print document.formatted(),
+    >>> six.print_(document.formatted(), end='')
     File "<memory>", line 10, in <memory>
     Failed example:
         a + b
@@ -560,7 +560,7 @@ in the source (in a comment for example), it will be included in the output:
     ... """)
 
     >>> document.process_with(m, globs={})
-    >>> print document.formatted(),
+    >>> six.print_(document.formatted(), end='')
     File "<memory>", line 10, in <memory>
     Failed example:
         a + b # doesn't mention "c"
@@ -576,7 +576,7 @@ in the source (in a comment for example), it will be included in the output:
 Instead of a text-based apprach, let's use the built-in tokenize module to more
 robustly identify referenced variables.
 
-    >>> import StringIO
+    >>> from six import StringIO
     >>> import token
     >>> import tokenize
 
@@ -586,7 +586,7 @@ robustly identify referenced variables.
     ...
     ...     if region.evaluated.getvalue():
     ...         vars = set()
-    ...         reader = StringIO.StringIO(region.source).readline
+    ...         reader = StringIO(region.source).readline
     ...         for ttype, tval, _, _, _ in tokenize.generate_tokens(reader):
     ...             if ttype == token.NAME:
     ...                 vars.add(tval)
@@ -608,7 +608,7 @@ included in the debugging information.
 
     >>> document = manuel.Document(document.source)
     >>> document.process_with(m, globs={})
-    >>> print document.formatted(),
+    >>> six.print_(document.formatted(), end='')
     File "<memory>", line 10, in <memory>
     Failed example:
         a + b # doesn't mention "c"

@@ -1,11 +1,11 @@
-import StringIO
+import six
 import manuel
 import os.path
 
 doctest = manuel.absolute_import('doctest')
 
 
-class DocTestResult(StringIO.StringIO):
+class DocTestResult(six.StringIO):
     pass
 
 
@@ -17,7 +17,7 @@ def parse(m, document, parser):
         region_end = region.lineno + region.source.count('\n')
         for chunk in parser.parse(region.source):
             # If the chunk contains prose (as opposed to and example), skip it.
-            if isinstance(chunk, basestring):
+            if isinstance(chunk, str):
                 continue
 
             chunk._manual = m

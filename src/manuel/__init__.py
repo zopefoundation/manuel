@@ -25,7 +25,7 @@ def absolute_import(name):
     module_path = normalize_module_path(imp.find_module(name)[1])
 
     # don't create a new module object if there's already one that we can reuse
-    for module in sys.modules.values():
+    for module in list(sys.modules.values()):
         if module is None or not hasattr(module, '__file__'):
             continue
         if module_path == normalize_module_path(module.__file__):
@@ -179,7 +179,7 @@ class RegionContainer(object):
         """
         return iter(self.regions)
 
-    def __nonzero__(self):
+    def __bool__(self):
         return bool(self.regions)
 
 
@@ -198,7 +198,7 @@ class Document(RegionContainer):
 
     def find_regions(self, start, end=None):
         def compile(regex):
-            if regex is not None and isinstance(regex, basestring):
+            if regex is not None and isinstance(regex, str):
                 regex = re.compile(regex)
             return regex
 
@@ -314,6 +314,10 @@ class Document(RegionContainer):
         self.insert_region('after', marker_region, new_region)
 
 
+def call(func):
+    return func()
+
+
 class Manuel(object):
 
     _debug = False
@@ -354,7 +358,7 @@ class Manuel(object):
         self.formatters.extend(other.formatters)
 
     # the testing integration (manuel.testing) sets this flag when needed
-    @apply
+    @call
     def debug():
         def getter(self):
             debug = self._debug

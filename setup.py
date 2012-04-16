@@ -32,7 +32,11 @@ setup(
     zip_safe=False,
     author='Benji York',
     author_email='benji@benjiyork.com',
-    description= 'Manuel lets you build tested documentation.',
+    description='Manuel lets you build tested documentation.',
+    classifiers=[
+        'Programming Language :: Python :: 2',
+        'Programming Language :: Python :: 3',
+        ],
     license='ZPL',
     extras_require={
         'tests': tests_require,
@@ -41,6 +45,7 @@ setup(
     test_suite = 'manuel.tests.test_suite',
     install_requires=[
         'setuptools',
+        'six',
         ],
     include_package_data=True,
     long_description = long_description,

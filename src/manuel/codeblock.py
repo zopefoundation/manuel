@@ -27,7 +27,7 @@ def execute_code_block(region, document, globs):
     if not isinstance(region.parsed, CodeBlock):
         return
 
-    exec region.parsed.code in globs
+    exec(region.parsed.code, globs)
     del globs['__builtins__'] # exec adds __builtins__, we don't want it
 
 
