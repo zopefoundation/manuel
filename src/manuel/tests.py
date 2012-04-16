@@ -46,7 +46,7 @@ def turtle_on_the_bottom_test():
 
 
 def test_suite():
-    tests = ['../index.txt', 'table-example.txt', 'README.txt', 'bugs.txt',
+    tests = ['index.txt', 'table-example.txt', 'README.txt', 'bugs.txt',
         'capture.txt']
 
     optionflags = doctest.NORMALIZE_WHITESPACE | doctest.ELLIPSIS

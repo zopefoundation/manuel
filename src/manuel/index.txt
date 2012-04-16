@@ -226,7 +226,9 @@ for more information about the `available options
 checkers <http://docs.python.org/library/doctest.html#outputchecker-objects>`_
 
 
-.. note:: :mod:`zope.testing.renormalizing` provides an :class:`OutputChecker`
+.. note::
+
+   :mod:`zope.testing.renormalizing` provides an :class:`OutputChecker`
    for smoothing out differences between actual and expected output for things
    that are hard to control (like memory addresses and time).  See the
    `module's doctests <http://svn.zope.org/zope.testing/trunk/src/zope/testing/renormalizing.py?view=markup>`_
@@ -988,6 +990,6 @@ Further Reading
 .. toctree::
     :maxdepth: 1
 
-    manuel/README.txt
-    manuel/table-example.txt
-    manuel/bugs.txt
+    README.txt
+    table-example.txt
+    bugs.txt
