@@ -41,6 +41,7 @@ setup(
     test_suite = 'manuel.tests.test_suite',
     install_requires=[
         'setuptools',
+        'six',
         ],
     include_package_data=True,
     long_description = long_description,

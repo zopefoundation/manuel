@@ -1,4 +1,4 @@
-import doctest
+from . import doctest
 import manuel
 import manuel.capture
 import manuel.codeblock
@@ -32,7 +32,7 @@ def turtle_on_the_bottom_test():
     ...     5
     ... ''')
     >>> document.process_with(manuel.doctest.Manuel(), globs={})
-    >>> print document.formatted()
+    >>> print(document.formatted())
     File "<memory>", line 3, in <memory>
     Failed example:
         2 + 2

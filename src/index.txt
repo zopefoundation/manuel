@@ -298,7 +298,7 @@ To do that you might write your document like this:
     >>> import manuel.doctest
     >>> m += manuel.doctest.Manuel()
     >>> document.process_with(m, globs={})
-    >>> print document.formatted(),
+    >>> print(document.formatted())
 
 This uses the syntax implemented in :mod:`manuel.capture` to capture a block of
 text into a variable (the one named after "->").
@@ -358,7 +358,7 @@ of Python code-blocks.  For example::
 
     .. code-block:: python
 
-        print 'hello'
+        print('hello')
 
 .. Let's create a reST document with a code block.
 
@@ -372,7 +372,7 @@ of Python code-blocks.  For example::
     ...
     ... A little prose to separate the examples.
     ...
-    ...     >>> print x
+    ...     >>> print(x)
     ...     hello
     ...
     ... """)
@@ -393,7 +393,7 @@ of Python code-blocks.  For example::
 
     We can see that none of the tests in the document failed:
 
-    >>> print document.formatted(),
+    >>> print(document.formatted())
 
 If the code-block generates some sort of error...
 
@@ -401,7 +401,7 @@ If the code-block generates some sort of error...
 
     .. code-block:: python
 
-        print does_not_exist
+        print(does_not_exist)
 
 .. -> source
 
@@ -412,7 +412,7 @@ If the code-block generates some sort of error...
 
     >>> document.source.startswith('.. code-block')
     True
-    >>> document.source.endswith('print does_not_exist\n')
+    >>> document.source.endswith('print(does_not_exist)\n')
     True
 
 ...that error will be reported:
@@ -459,7 +459,7 @@ invisible-code-block:: python"::
     >>> import manuel
     >>> document = manuel.Document(source)
     >>> document.process_with(m, globs={})
-    >>> print document.formatted()
+    >>> print(document.formatted())
 
 .. note:: The "invisible-code-block" directive will work with either one or two
    colons.  The reason is that reST processers (like docutils and Sphinx) will
@@ -531,7 +531,7 @@ Here's an example of combining footnotes with doctests:
     >>> import manuel
     >>> document = manuel.Document(source)
     >>> document.process_with(m, globs={})
-    >>> print document.formatted(),
+    >>> print(document.formatted())
 
 .. The order of examples in footnotes is preserved.  If not, the document below
    would generate an error because "a" won't be defined when "b = a + 1" is
@@ -553,7 +553,7 @@ Here's an example of combining footnotes with doctests:
     ...
     ... """)
     >>> document.process_with(m, globs={})
-    >>> print document.formatted()
+    >>> print(document.formatted())
 
 It is also possible to reference more than one footnote on a single line.
 
@@ -584,7 +584,7 @@ It is also possible to reference more than one footnote on a single line.
 
     >>> document = manuel.Document(source)
     >>> document.process_with(m, globs={})
-    >>> print document.formatted()
+    >>> print(document.formatted())
 
 
 .. reset-globs
@@ -660,7 +660,7 @@ If we add an ignore marker to the block we don't want processed...
 ...the error goes away.
 
     >>> document.process_with(m, globs={})
-    >>> print document.formatted(),
+    >>> print(document.formatted())
 
 
 Ignoring Literal Blocks
@@ -674,14 +674,14 @@ Ignoring literal blocks is a little more involved::
 
     ::
 
-       >>> lambda: print 'hi'
+       >>> lambda: x=1
 
 .. -> source
 
     >>> document = manuel.Document(source)
 
     >>> document.process_with(m, globs={})
-    >>> print document.formatted(),
+    >>> print(document.formatted())
 
 .. we want to be very sure that the above example without the ignore actually
    generates an error:
@@ -689,16 +689,11 @@ Ignoring literal blocks is a little more involved::
     >>> document = manuel.Document(document.source.replace(
     ...     '.. ignore-next-block', ''))
     >>> document.process_with(m, globs={})
-    >>> print document.formatted(),
+    >>> print(document.formatted())
     File "<memory>"...
-    Failed example:
-        lambda: print 'hi'
     Exception raised:
           ...
-          File "<doctest <memory>[0]>", line 1
-             lambda: print 'hi'
-                         ^
-         SyntaxError: invalid syntax
+         SyntaxError: ...
 
 
 .. reset-globs
@@ -725,7 +720,7 @@ The ".. reset-globs" directive resets the globals in the test::
 
     It is still defined.
 
-        >>> print x
+        >>> print(x)
         hello
 
     Now we can reset the globals...
@@ -734,7 +729,7 @@ The ".. reset-globs" directive resets the globals in the test::
 
     ...and the name binding will be gone:
 
-        >>> print x
+        >>> print(x)
         Traceback (most recent call last):
             ...
         NameError: name 'x' is not defined
@@ -748,7 +743,7 @@ The ".. reset-globs" directive resets the globals in the test::
     >>> m = manuel.isolation.Manuel()
     >>> m += manuel.doctest.Manuel()
 
-We can see that after the globals have been reset, the second "print x" line
+We can see that after the globals have been reset, the second "print(x)" line
 raises an error.
 
 Of course, resetting to an empty set of global variables isn't always what's
@@ -763,7 +758,7 @@ baseline set of globals that will be restored at each reset.
 
     It is still defined.
 
-        >>> print x
+        >>> print(x)
         hello
 
     We can capture the currently defined globals:
@@ -772,27 +767,27 @@ baseline set of globals that will be restored at each reset.
 
     Of course capturing the globals doesn't disturb them.
 
-        >>> print x
+        >>> print(x)
         hello
 
     Now if we define a new global...
 
         >>> y = 'goodbye'
-        >>> print y
+        >>> print(y)
         goodbye
 
     .. reset-globs
 
     ...it will disappear after a reset.
 
-        >>> print y
+        >>> print(y)
         Traceback (most recent call last):
             ...
         NameError: name 'y' is not defined
 
     But the captured globals will still be defined.
 
-        >>> print x
+        >>> print(x)
         hello
 
 .. -> source
@@ -800,7 +795,7 @@ baseline set of globals that will be restored at each reset.
     >>> import manuel
     >>> document = manuel.Document(source)
     >>> document.process_with(m, globs={})
-    >>> print document.formatted(),
+    >>> print(document.formatted())
 
 
 .. reset-globs
@@ -829,18 +824,18 @@ Grouping Tests by Heading
 
     Some prose.
 
-        >>> print 'first test case'
+        >>> print('first test case')
 
     Some more prose.
 
-        >>> print 'still in the first test case'
+        >>> print('still in the first test case')
 
     Second Section
     ==============
 
     Even more prose.
 
-        >>> print 'second test case'
+        >>> print('second test case')
 
 .. -> source
 
@@ -850,22 +845,22 @@ Grouping Tests by Heading
     >>> m = manuel.testcase.SectionManuel()
     >>> m += manuel.doctest.Manuel()
     >>> document.process_with(m, globs={})
-    >>> print document.formatted(),
+    >>> print(document.formatted())
     File "<memory>"...
     Failed example:
-        print 'first test case'
+        print('first test case')
     Expected nothing
     Got:
         first test case
     File "<memory>"...
     Failed example:
-        print 'still in the first test case'
+        print('still in the first test case')
     Expected nothing
     Got:
         still in the first test case
     File "<memory>"...
     Failed example:
-        print 'second test case'
+        print('second test case')
     Expected nothing
     Got:
         second test case
@@ -874,7 +869,7 @@ Grouping Tests by Heading
 
     >>> import manuel.testing
     >>> for regions in manuel.testing.group_regions_by_test_case(document):
-    ...     print (regions.location, regions.id)
+    ...     print((regions.location, regions.id))
     ('<memory>', None)
     ('<memory>', 'First Section')
     ('<memory>', 'Second Section')
@@ -900,13 +895,13 @@ identify them with a marker::
     The following test will be in a test case that is not individually
     identifiable.
 
-        >>> print 'first test case (unidentified)'
+        >>> print('first test case (unidentified)')
 
     Some more prose.
 
     .. test-case: first-named-test-case
 
-        >>> print 'first identified test case'
+        >>> print('first identified test case')
 
 
     Second Section
@@ -918,7 +913,7 @@ identify them with a marker::
 
     Even more prose.
 
-        >>> print 'second identified test case'
+        >>> print('second identified test case')
 
 .. -> source
 
@@ -926,8 +921,9 @@ identify them with a marker::
     >>> m = manuel.testcase.MarkerManuel()
     >>> m += manuel.doctest.Manuel()
     >>> document.parse_with(m)
+    >>> import six
     >>> for regions in manuel.testing.group_regions_by_test_case(document):
-    ...     print regions.location, regions.id
+    ...     six.print_(regions.location, regions.id)
     <memory> None
     <memory> first-named-test-case
     <memory> second-named-test-case
@@ -976,8 +972,9 @@ of test case identification:
 .. make sure above finds all the test cases appropriately
 
     >>> document.parse_with(m)
+    >>> import six
     >>> for regions in manuel.testing.group_regions_by_test_case(document):
-    ...     print regions.location, regions.id
+    ...     six.print_(regions.location, regions.id)
     <memory> None
     <memory> First Section
     <memory> first-named-test-case
