@@ -180,6 +180,7 @@ resulting instance, the other one gets the value too.
     >>> m3.debug
     True
 
+
 TestCase id methods
 -------------------
 
@@ -194,3 +195,44 @@ instead:
     >>> m = manuel.Manuel()
     >>> six.print_(TestCase(m, manuel.RegionContainer(), None).id())
     <memory>
+
+
+DocTestRunner peaks at sys.argv
+-------------------------------
+
+A (bad) feature of DocTestRunner (and its subclass DebugRunner) is that it
+will turn on "verbose" mode if sys.argv contains "-v".  This means that if you
+pass -v to a test runner that then invokes Manuel, all tests would fail
+because extra junk was inserted into the doctest output.  That is, before I
+fixed it.  Now, manuel.doctest.Manuel passes "verbose = False" to the
+DocTestRunner constructor which disables the functionality.
+
+We can ensure that the verbose mode is always disabled by creating test
+standins for DocTestRunner and DebugRunner that capture their constructor
+arguments.
+
+.. code-block:: python
+
+    import doctest
+    import manuel.doctest
+    class FauxDocTestRunner(object):
+        def __init__(self, **kws):
+           self.kws = kws
+    try:
+        manuel.doctest.DocTestRunner = FauxDocTestRunner
+        manuel.doctest.DebugRunner = FauxDocTestRunner
+
+        m = manuel.doctest.Manuel()
+
+    finally:
+        manuel.doctest.DocTestRunner = doctest.DocTestRunner
+        manuel.doctest.DebugRunner = doctest.DebugRunner
+
+Now, with the Manuel object instantiated we can verify that verbose is off for
+both test runners.
+
+    >>> m.runner.kws['verbose']
+    False
+
+    >>> m.debug_runner.kws['verbose']
+    False

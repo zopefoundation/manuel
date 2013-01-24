@@ -4,6 +4,9 @@ import os.path
 
 doctest = manuel.absolute_import('doctest')
 
+DocTestRunner = doctest.DocTestRunner
+DebugRunner = doctest.DebugRunner
+
 
 class DocTestResult(six.StringIO):
     pass
@@ -96,9 +99,9 @@ def format(document):
 class Manuel(manuel.Manuel):
 
     def __init__(self, optionflags=0, checker=None, parser=None):
-        self.runner = doctest.DocTestRunner(optionflags=optionflags,
-            checker=checker)
-        self.debug_runner = doctest.DebugRunner(optionflags=optionflags)
+        self.runner = DocTestRunner(optionflags=optionflags,
+            checker=checker, verbose=False)
+        self.debug_runner = DebugRunner(optionflags=optionflags, verbose=False)
         def evaluate_closure(region, document, globs):
             # capture "self"
             evaluate(self, region, document, globs)
