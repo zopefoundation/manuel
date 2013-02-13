@@ -429,6 +429,50 @@ Manuel to execute it, use :ref:`manuel.ignore <ignore>` to ignore that
 particular block.
 
 
+.. reset-globs
+
+Docutils Code Blocks
+--------------------
+
+Sphinx and docutils have different ideas of how code blocks should be spelled.
+Manuel supports the docutils-style code blocks too.
+
+::
+
+    .. code:: python
+
+        a = 1
+
+.. -> source
+
+    >>> import manuel
+    >>> document = manuel.Document(source)
+    >>> import manuel.codeblock
+    >>> m = manuel.codeblock.Manuel()
+    >>> document.parse_with(m)
+    >>> for region in document:
+    ...     print((region.lineno, region.parsed or region.source))
+    (1, <manuel.codeblock.CodeBlock object...>)
+
+Docutils options after the opening of the code block are also allowed::
+
+    .. code:: python
+        :class: hidden
+
+        a = 1
+
+.. -> source
+
+    >>> import manuel
+    >>> document = manuel.Document(source)
+    >>> import manuel.codeblock
+    >>> m = manuel.codeblock.Manuel()
+    >>> document.parse_with(m)
+    >>> for region in document:
+    ...     print((region.lineno, region.parsed, region.parsed.source))
+    (1, <manuel.codeblock.CodeBlock object...>, '\na = 1\n')
+
+
 Invisible Code Blocks
 ---------------------
 
