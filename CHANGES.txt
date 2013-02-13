@@ -1,6 +1,12 @@
 CHANGES
 =======
 
+1.7.0 (2013-02-13)
+------------------
+
+- Added support for docutils-style code blocks and options there-of.
+
+
 1.6.1 (2013-01-24)
 ------------------
 
